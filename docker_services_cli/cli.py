@@ -17,20 +17,16 @@ from .env import set_env
 from .services import services_down, services_up
 
 
+class ServicesCtx(object):
+    """Context class for docker services cli."""
+
+    def __init__(self, filepath):
+        """Constructor."""
+        self.filepath = filepath
+
+
 @click.group()
 @click.version_option()
-def cli():
-    """Initialize CLI context."""
-
-
-@cli.command()
-@click.argument(
-    "action",
-    default="up",
-    required=False,
-    type=click.Choice(["up", "down"], case_sensitive=False),
-)
-@click.argument("services", nargs=-1, required=False)  # -1 incompat with default
 @click.option(
     "--filepath",
     "-f",
@@ -39,11 +35,33 @@ def cli():
     type=click.Path(exists=True),
     help="Path to a docker compose file with the desired services definition.",
 )
-def services(action, services, filepath):
-    """Boots up or down the required services."""
+@click.pass_context
+def cli(ctx, filepath):
+    """Initialize CLI context."""
     set_env()
-    if action == "up":
-        services_up(list(services), filepath)
+    ctx.obj = ServicesCtx(filepath=filepath)
 
-    else:
-        services_down(filepath)
+@cli.command()
+@click.argument("services", nargs=-1, required=False)  # -1 incompat with default
+@click.option(
+    "--no-wait",
+    is_flag=True,
+    help="Wait for services to be up (use healthchecks).",
+)
+@click.pass_obj
+def up(services_ctx, services, no_wait):
+    """Boots up the required services."""
+    services_up(
+        services=list(services),
+        filepath=services_ctx.filepath,
+        wait=(not no_wait)
+    )
+    click.secho("Services up!", fg="green")
+
+
+@cli.command()
+@click.pass_obj
+def down(services_ctx):
+    """Boots down the required services."""
+    services_down(filepath=services_ctx.filepath)
+    click.secho("Services down!", fg="green")
