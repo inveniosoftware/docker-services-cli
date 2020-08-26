@@ -89,26 +89,31 @@ def redis_healthcheck(*args, **kwargs):
     ])
 
 
-READYNESS_CHECKS = {
+HEALTHCHECKS = {
     "es": es_healthcheck,
     "postgresql": postgresql_healthcheck,
     "mysql": mysql_healthcheck,
     "redis": redis_healthcheck,
 }
-"""Readyness check functions module path, as string."""
+"""Health check functions module path, as string."""
 
 
 def wait_for_services(services, filepath=DOCKER_SERVICES_FILEPATH, max_retries=6):
     """Wait for services to be up.
 
     It performs configured healthchecks in a serial fashion, following the
-    order given in the ``up`` command.
+    order given in the ``up`` command. If the services is an empty list, to be
+    compliant with `docker-compose` it will perform the healthchecks of all the
+    services.
     """
+    if len(services) == 0:
+        services = HEALTHCHECKS.keys()
+
     for service in services:
         exp_backoff_time = 2
         try_ = 1
         # Using plain __import__ to avoid depending on invenio-base
-        check = READYNESS_CHECKS[service]
+        check = HEALTHCHECKS[service]
         ready = check(filepath=filepath)
         while not ready and try_ < max_retries:
             click.secho(
