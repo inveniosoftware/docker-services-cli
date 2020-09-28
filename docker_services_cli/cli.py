@@ -51,8 +51,18 @@ def cli(ctx, filepath):
 @click.pass_obj
 def up(services_ctx, services, no_wait):
     """Boots up the required services."""
+    _services = list(services)
+
+    if not _services:
+        click.secho("No service was provided... Exiting", fg="red")
+        exit(0)  # Do not fail to allow SQLite
+
+    # NOTE: docker-compose boots up all if none is provided
+    if len(_services) == 1 and _services[0].lower() == "all":
+        _services = []
+
     services_up(
-        services=list(services),
+        services=_services,
         filepath=services_ctx.filepath,
         wait=(not no_wait)
     )
