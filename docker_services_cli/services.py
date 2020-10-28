@@ -7,7 +7,7 @@
 
 """Services module."""
 
-import subprocess
+from subprocess import check_call, Popen, PIPE
 import time
 
 import click
@@ -15,31 +15,40 @@ import click
 from .config import DOCKER_SERVICES_FILEPATH, MYSQL, POSTGRESQL
 
 
-def _run_healthcheck_command(command):
+def _run_healthcheck_command(command, verbose=False):
     """Runs a given command, returns True if it succeeds, False otherwise."""
-    try:
-        subprocess.check_call(
-            command,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
+    p = Popen(command, stdout=PIPE, stderr=PIPE)
+    output, error = p.communicate()
+    output = output.decode("utf-8")
+    error = error.decode("utf-8")
+    if p.returncode == 0:
+        if verbose:
+            click.secho(output, fg="green")
         return True
-    except subprocess.CalledProcessError:
+    if p.returncode != 0:
+        if verbose:
+            click.secho(
+                f"Healthcheck failed.\nOutput: {output}\nError:{error}",
+                fg="red"
+            )
         return False
 
 
 def es_healthcheck(*args, **kwargs):
     """Elasticsearch healthcheck."""
+    verbose = kwargs['verbose']
+
     return _run_healthcheck_command([
         "curl",
         "-f",
         "localhost:9200/_cluster/health?wait_for_status=green"
-    ])
+    ], verbose)
 
 
 def postgresql_healthcheck(*args, **kwargs):
     """Postgresql healthcheck."""
     filepath = kwargs['filepath']
+    verbose = kwargs['verbose']
 
     return _run_healthcheck_command([
         "docker-compose",
@@ -50,12 +59,13 @@ def postgresql_healthcheck(*args, **kwargs):
         "bash",
         "-c",
         "pg_isready",
-    ])
+    ], verbose)
 
 
 def mysql_healthcheck(*args, **kwargs):
     """Mysql healthcheck."""
     filepath = kwargs['filepath']
+    verbose = kwargs['verbose']
     password = MYSQL["MYSQL_ROOT_PASSWORD"]
 
     return _run_healthcheck_command([
@@ -67,12 +77,13 @@ def mysql_healthcheck(*args, **kwargs):
         "bash",
         "-c",
         f"mysql -p{password} -e \"select Version();\"",
-    ])
+    ], verbose)
 
 
 def redis_healthcheck(*args, **kwargs):
     """Redis healthcheck."""
     filepath = kwargs['filepath']
+    verbose = kwargs['verbose']
 
     return _run_healthcheck_command([
         "docker-compose",
@@ -86,7 +97,7 @@ def redis_healthcheck(*args, **kwargs):
         "|",
         "grep 'PONG'",
         "&>/dev/null;",
-    ])
+    ], verbose)
 
 
 HEALTHCHECKS = {
@@ -98,7 +109,8 @@ HEALTHCHECKS = {
 """Health check functions module path, as string."""
 
 
-def wait_for_services(services, filepath=DOCKER_SERVICES_FILEPATH, max_retries=6):
+def wait_for_services(services, filepath=DOCKER_SERVICES_FILEPATH,
+                      max_retries=6, verbose=False):
     """Wait for services to be up.
 
     It performs configured healthchecks in a serial fashion, following the
@@ -114,7 +126,7 @@ def wait_for_services(services, filepath=DOCKER_SERVICES_FILEPATH, max_retries=6
         try_ = 1
         # Using plain __import__ to avoid depending on invenio-base
         check = HEALTHCHECKS[service]
-        ready = check(filepath=filepath)
+        ready = check(filepath=filepath, verbose=verbose)
         while not ready and try_ < max_retries:
             click.secho(
                 f"{service} not ready at {try_} retries, waiting " \
@@ -124,7 +136,7 @@ def wait_for_services(services, filepath=DOCKER_SERVICES_FILEPATH, max_retries=6
             try_ += 1
             time.sleep(exp_backoff_time)
             exp_backoff_time *= 2
-            ready = check(filepath=filepath)
+            ready = check(filepath=filepath, verbose=verbose)
 
         if not ready:
             click.secho(f"Unable to boot up {service}", fg="red")
@@ -133,7 +145,8 @@ def wait_for_services(services, filepath=DOCKER_SERVICES_FILEPATH, max_retries=6
             click.secho(f"{service} up and running!", fg="green")
 
 
-def services_up(services, filepath=DOCKER_SERVICES_FILEPATH, wait=True):
+def services_up(services, filepath=DOCKER_SERVICES_FILEPATH, wait=True,
+                retries=6, verbose=False):
     """Start the given services up.
 
     docker-compose is smart about not rebuilding an image if
@@ -143,9 +156,10 @@ def services_up(services, filepath=DOCKER_SERVICES_FILEPATH, wait=True):
     command = ["docker-compose", "--file", filepath, "up", "-d"]
     command.extend(services)
 
-    subprocess.check_call(command)
+    check_call(command)
     if wait:
-        wait_for_services(services, filepath)
+        wait_for_services(services, filepath, max_retries=retries,
+                          verbose=verbose)
 
 
 def services_down(filepath=DOCKER_SERVICES_FILEPATH):
@@ -156,4 +170,4 @@ def services_down(filepath=DOCKER_SERVICES_FILEPATH):
     """
     command = ["docker-compose", "--file", filepath, "down"]
 
-    subprocess.check_call(command)
+    check_call(command)
