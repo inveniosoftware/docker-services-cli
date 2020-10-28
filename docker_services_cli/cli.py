@@ -20,9 +20,10 @@ from .services import services_down, services_up
 class ServicesCtx(object):
     """Context class for docker services cli."""
 
-    def __init__(self, filepath):
+    def __init__(self, filepath, verbose):
         """Constructor."""
         self.filepath = filepath
+        self.verbose = verbose
 
 
 @click.group()
@@ -35,11 +36,17 @@ class ServicesCtx(object):
     type=click.Path(exists=True),
     help="Path to a docker compose file with the desired services definition.",
 )
+@click.option(
+    "--verbose",
+    is_flag=True,
+    default=False,
+    help="Verbose output.",
+)
 @click.pass_context
-def cli(ctx, filepath):
+def cli(ctx, filepath, verbose):
     """Initialize CLI context."""
     set_env()
-    ctx.obj = ServicesCtx(filepath=filepath)
+    ctx.obj = ServicesCtx(filepath=filepath, verbose=verbose)
 
 @cli.command()
 @click.argument("services", nargs=-1, required=False)  # -1 incompat with default
@@ -48,8 +55,14 @@ def cli(ctx, filepath):
     is_flag=True,
     help="Wait for services to be up (use healthchecks).",
 )
+@click.option(
+    '--retries',
+    default=6,
+    type=int,
+    help="Number of times to retry a service's healthcheck."
+)
 @click.pass_obj
-def up(services_ctx, services, no_wait):
+def up(services_ctx, services, no_wait, retries):
     """Boots up the required services."""
     _services = list(services)
 
@@ -64,7 +77,9 @@ def up(services_ctx, services, no_wait):
     services_up(
         services=_services,
         filepath=services_ctx.filepath,
-        wait=(not no_wait)
+        wait=(not no_wait),
+        retries=retries,
+        verbose=services_ctx.verbose
     )
     click.secho("Services up!", fg="green")
 
