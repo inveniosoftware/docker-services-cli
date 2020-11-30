@@ -9,4 +9,6 @@ Installation
 
 Docker-Services-CLI can be installed from PyPI.
 
-  pip install docker-services-cli
+.. code-block:: console
+
+  $ pip install docker-services-cli
