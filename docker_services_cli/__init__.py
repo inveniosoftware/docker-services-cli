@@ -30,7 +30,7 @@ And turn them of once they are not needed anymore:
 
 .. code-block:: console
 
-    $ docker-servies-cli down
+    $ docker-services-cli down
 """
 
 from .version import __version__
