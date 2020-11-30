@@ -9,20 +9,28 @@
 
 The specific version for the services can be set through environment variables
 
+.. code-block:: console
+
     $ export ES_VERSION=7.2.0
 
 It can also use the centrally managed (supported) major version:
+
+.. code-block:: console
 
     $ export ES_VERSION=ES_7_LATEST
 
 Then it simply needs to boot up the services. Note that if no version was exported
 in the environment, the CLI will use the default values set in ``env.py``.
 
-    $ docker-services services up es postgresql redis
+.. code-block:: console
+
+    $ docker-services-cli up es postgresql redis
 
 And turn them of once they are not needed anymore:
 
-    $ docker-servies services down
+.. code-block:: console
+
+    $ docker-services-cli down
 """
 
 from .version import __version__

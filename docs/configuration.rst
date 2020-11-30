@@ -7,5 +7,5 @@
 Configuration
 =============
 
-.. automodule:: docker_services_cli.env
+.. automodule:: docker_services_cli.config
    :members:
