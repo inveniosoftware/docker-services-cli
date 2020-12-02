@@ -13,14 +13,12 @@ from distutils.version import StrictVersion
 
 import click
 
-from .config import DEFAULT_VERSIONS, SERVICES
+from .config import SERVICES, SERVICES_ALL_DEFAULT_VERSIONS
 
 
 def _set_default_env(services_version, default_version):
     """Set environmental variable value if it does not exist."""
-    os.environ[services_version] = os.environ.get(
-        services_version, default_version
-    )
+    os.environ[services_version] = os.environ.get(services_version, default_version)
 
 
 def _is_version(version):
@@ -63,22 +61,88 @@ def _load_or_set_env(services_version, default_version):
     else:
         click.secho(
             f"Environment variable for version {version_from_env} not set \
-            or set to a non-compliant format (dot separated numbers).", fg="red"
+            or set to a non-compliant format (dot separated numbers).",
+            fg="red",
         )
         sys.exit(1)
 
 
+def override_default_env(services_to_override=None):
+    """Override default environment according to list of services with version.
+
+    :param services_to_override: List of service name strings including
+        service version without any separator e.g. ``postgresql11``.
+    """
+    services_to_override = set(services_to_override or []).difference(SERVICES.keys())
+    if services_to_override:
+        num_services_to_override = len(services_to_override)
+        for service_name in SERVICES:
+            for service_override in services_to_override:
+                if service_name in service_override:
+                    service_override_version = service_override.replace(
+                        service_name, ""
+                    )
+                    env_var_with_version = (
+                        f"{service_name.upper()}_{service_override_version}_LATEST"
+                    )
+                    if (SERVICES_ALL_DEFAULT_VERSIONS.get(
+                       env_var_with_version)):
+                        os.environ[
+                            f"{service_name.upper()}_VERSION"
+                        ] = SERVICES_ALL_DEFAULT_VERSIONS.get(
+                            env_var_with_version
+                        )
+                    else:
+                        available_major_versions = [
+                            v.split(".")[0]
+                            for v in SERVICES[service_name][
+                                "DEFAULT_VERSIONS"
+                            ].values()
+                        ]
+                        click.secho(
+                            f"No major version {service_override_version} for {service_name}. "
+                            f"Please use one of the available ones: {available_major_versions}",
+                            fg="red",
+                        )
+                        exit(1)
+                    num_services_to_override -= 1
+                    if not num_services_to_override:
+                        return
+
 
 def set_env():
     """Export the environment variables for services and versions."""
-    # export variables for latest versions
-    for key, value in DEFAULT_VERSIONS.items():
+    for key, value in SERVICES_ALL_DEFAULT_VERSIONS.items():
         _set_default_env(key, value)
 
-    # export services configuration
-    for service in SERVICES:
+    for service in SERVICES.values():
         for key, value in service.items():
-            if key.endswith('_VERSION'):
+            if key.endswith("_VERSION"):
                 _load_or_set_env(key, value)
-            else:
-                _set_default_env(key, value)
+            elif key == "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES":
+                for envvar_name, envvar_value in value.items():
+                    _set_default_env(envvar_name, envvar_value)
+
+
+def print_setup_env_config(services, called_from, env_set_command="export"):
+    """Prints setup environment instructions."""
+    should_print_instructions = False
+    for service in services:
+        for key, value in (
+            SERVICES.get(service)
+            .get("CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES", {})
+            .items()
+        ):
+            command = f"{env_set_command} {key}"
+            if env_set_command == "export":
+                command += f"={value}"
+            click.echo(command)
+            should_print_instructions = True
+
+    if should_print_instructions:
+        click.secho("# Configure your environment running:", fg="yellow")
+        instructions = f'# eval "$(docker-services-cli {called_from}'
+        if called_from == "up":
+            instructions += " " + " ".join(services)
+        instructions += ' --env)"'
+        click.secho(instructions, fg="yellow")

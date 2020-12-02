@@ -105,7 +105,7 @@ def redis_healthcheck(*args, **kwargs):
 
 
 HEALTHCHECKS = {
-    "es": es_healthcheck,
+    "elasticsearch": es_healthcheck,
     "postgresql": postgresql_healthcheck,
     "mysql": mysql_healthcheck,
     "redis": redis_healthcheck,

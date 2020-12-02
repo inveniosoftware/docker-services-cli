@@ -28,50 +28,95 @@ versions before loading a given service's version.
 DOCKER_SERVICES_FILEPATH = "docker_services_cli/docker-services.yml"
 """Docker services file default path."""
 
-DEFAULT_VERSIONS = {
-    "ES_6_LATEST": "6.8.12",
-    "ES_7_LATEST": "7.9.0",
-    "POSTGRESQL_9_LATEST": "9.6.19",
-    "POSTGRESQL_10_LATEST": "10.14",
-    "POSTGRESQL_11_LATEST": "11.9",
-    "POSTGRESQL_12_LATEST": "12.4",
-    "POSTGRESQL_13_LATEST": "13.0",
-    "MYSQL_5_LATEST": "5.7.31",
-    "MYSQL_8_LATEST": "8.0.21",
-    "REDIS_6_LATEST": "6.0.6",
-    "MEMCACHED_LATEST": "1.6.6",
-    "RABBITMQ_3_LATEST": "3.8.7",
-}
-"""Services default latest versions."""
-
 # Elasticsearch
 ELASTICSEARCH = {
-    "ES_VERSION": "ES_7_LATEST"
+    "ELASTICSEARCH_VERSION": "ELASTICSEARCH_7_LATEST",
+    "DEFAULT_VERSIONS": {
+        "ELASTICSEARCH_6_LATEST": "6.8.12",
+        "ELASTICSEARCH_7_LATEST": "7.9.0",
+    },
 }
 """Elasticsearch service configuration."""
 
 # PostrgreSQL
 POSTGRESQL = {
     "POSTGRESQL_VERSION": "POSTGRESQL_9_LATEST",
-    "POSTGRESQL_USER": "invenio",
-    "POSTGRESQL_PASSWORD": "invenio",
-    "POSTGRESQL_DB": "invenio",
+    "DEFAULT_VERSIONS": {
+        "POSTGRESQL_9_LATEST": "9.6.19",
+        "POSTGRESQL_10_LATEST": "10.14",
+        "POSTGRESQL_11_LATEST": "11.9",
+        "POSTGRESQL_12_LATEST": "12.4",
+        "POSTGRESQL_13_LATEST": "13.0",
+    },
+    "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES": {
+        "POSTGRESQL_USER": "invenio",
+        "POSTGRESQL_PASSWORD": "invenio",
+        "POSTGRESQL_DB": "invenio",
+    },
+    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
+        "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio",
+    },
 }
 """Postgresql service configuration."""
 
 # MySQL
 MYSQL = {
     "MYSQL_VERSION": "MYSQL_5_LATEST",
-    "MYSQL_USER": "invenio",
-    "MYSQL_PASSWORD": "invenio",
-    "MYSQL_DB": "invenio",
-    "MYSQL_ROOT_PASSWORD": "invenio",
+    "DEFAULT_VERSIONS": {"MYSQL_5_LATEST": "5.7.31", "MYSQL_8_LATEST": "8.0.21"},
+    "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES": {
+        "MYSQL_USER": "invenio",
+        "MYSQL_PASSWORD": "invenio",
+        "MYSQL_DB": "invenio",
+        "MYSQL_ROOT_PASSWORD": "invenio",
+    },
+    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
+        "SQLALCHEMY_DATABASE_URI": "mysql+pymysql://invenio:invenio@localhost:3306/invenio",
+    },
 }
 """MySQL service configuration."""
 
-SERVICES = [
-    ELASTICSEARCH,
-    POSTGRESQL,
-    MYSQL,
-]
+REDIS = {
+    "REDIS_VERSION": "REDIS_6_LATEST",
+    "DEFAULT_VERSIONS": {"REDIS_6_LATEST": "6.0.6"},
+    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {"CACHE_TYPE": "redis"},
+}
+"""Redis service configuration."""
+
+MEMCACHED = {
+    "MEMCACHED_VERSION": "MEMCACHED_LATEST",
+    "DEFAULT_VERSIONS": {"MEMCACHED_LATEST": "1.6.6"},
+    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
+        "CACHE_TYPE": "memcached",
+        "BROKER_URL": "redis://localhost:6379/0",
+    },
+}
+"""Memcached service configuration."""
+
+RABBITMQ = {
+    "RABBITMQ_VERSION": "RABBITMQ_3_LATEST",
+    "DEFAULT_VERSIONS": {"RABBITMQ_3_LATEST": "3.8.7"},
+    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
+        "BROKER_URL": "amqp://localhost:5672//"
+    },
+}
+"""RabbitMQ service configuration."""
+
+SERVICES = {
+    "elasticsearch": ELASTICSEARCH,
+    "postgresql": POSTGRESQL,
+    "mysql": MYSQL,
+    "redis": REDIS,
+    "memcached": MEMCACHED,
+    "rabbitmq": RABBITMQ,
+}
 """List of services to configure."""
+
+SERVICES_ALL_DEFAULT_VERSIONS = {
+    **ELASTICSEARCH.get("DEFAULT_VERSIONS", {}),
+    **POSTGRESQL.get("DEFAULT_VERSIONS", {}),
+    **REDIS.get("DEFAULT_VERSIONS", {}),
+    **MYSQL.get("DEFAULT_VERSIONS", {}),
+    **MEMCACHED.get("DEFAULT_VERSIONS", {}),
+    **RABBITMQ.get("DEFAULT_VERSIONS", {}),
+}
+"""Services default latest versions."""
