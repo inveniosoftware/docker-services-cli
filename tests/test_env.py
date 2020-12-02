@@ -12,7 +12,13 @@ import os
 
 import pytest
 
-from docker_services_cli.env import _is_version, _load_or_set_env
+from docker_services_cli.config import SERVICES
+from docker_services_cli.env import (
+    set_env,
+    _is_version,
+    override_default_env,
+    _load_or_set_env,
+)
 
 
 def test_is_version():
@@ -29,7 +35,7 @@ def test_load_or_set_env_default():
 
     assert os.environ.get("TEST_VERSION_DEFAULT") == "1.0.0"
 
-    del os.environ['TEST_VERSION_DEFAULT']
+    del os.environ["TEST_VERSION_DEFAULT"]
 
 
 def test_load_or_set_env_from_value():
@@ -39,7 +45,8 @@ def test_load_or_set_env_from_value():
 
     assert os.environ.get("TEST_VERSION_DEFAULT") == "2.0.0"
 
-    del os.environ['TEST_VERSION_DEFAULT']
+    del os.environ["TEST_VERSION_DEFAULT"]
+
 
 def test_load_or_set_env_from_string():
     """Tests the loading of a service default value from string."""
@@ -49,8 +56,9 @@ def test_load_or_set_env_from_string():
 
     assert os.environ.get("TEST_VERSION_DEFAULT") == "1.0.0"
 
-    del os.environ['TEST_SERVICE_VERSION_DEFAULT']
-    del os.environ['TEST_VERSION_DEFAULT']
+    del os.environ["TEST_SERVICE_VERSION_DEFAULT"]
+    del os.environ["TEST_VERSION_DEFAULT"]
+
 
 def test_setversion_not_set():
     """Tests the loading when it results in a system exit."""
@@ -61,4 +69,38 @@ def test_setversion_not_set():
 
     assert ex.value.code == 1
 
-    del os.environ['TEST_VERSION_DEFAULT']
+    del os.environ["TEST_VERSION_DEFAULT"]
+
+
+@pytest.mark.parametrize(
+    "service_and_version_string,envvar,expected_value",
+    [
+        (
+            "elasticsearch",
+            "ELASTICSEARCH_VERSION",
+            SERVICES["elasticsearch"]["DEFAULT_VERSIONS"][
+                SERVICES["elasticsearch"]["ELASTICSEARCH_VERSION"]
+            ],
+        ),  # case in which no version is passed, default value should be used
+        pytest.param(
+            "postgresql-1",
+            "POSTGRESQL_VERSION",
+            SERVICES["postgresql"]["DEFAULT_VERSIONS"][
+                SERVICES["postgresql"]["POSTGRESQL_VERSION"]
+            ],
+            marks=pytest.mark.xfail,
+        ),  # case in which a wrong version is passed, falls back to default
+        (
+            "mysql8",
+            "MYSQL_VERSION",
+            SERVICES["mysql"]["DEFAULT_VERSIONS"]["MYSQL_8_LATEST"],
+        ),  # case in which a correct non default version is passed, should be overriden
+    ],
+)
+def test_override_default_service_versions(
+    service_and_version_string, envvar, expected_value
+):
+    """Test overriding default versions with service+version strings."""
+    set_env()  # set default environment
+    override_default_env([service_and_version_string])
+    assert os.getenv(envvar) == expected_value
