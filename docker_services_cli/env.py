@@ -2,8 +2,8 @@
 #
 # Copyright (C) 2020 CERN.
 #
-# Docker-Services-CLI is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# Docker-Services-CLI is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
 
 """Environment module."""
 
@@ -18,13 +18,15 @@ from .config import SERVICES, SERVICES_ALL_DEFAULT_VERSIONS
 
 def _set_default_env(services_version, default_version):
     """Set environmental variable value if it does not exist."""
-    os.environ[services_version] = os.environ.get(services_version, default_version)
+    os.environ[services_version] = os.environ.get(
+        services_version, default_version)
 
 
 def _is_version(version):
     """Checks if a string is a version of the format `x.y.z`.
 
-    NOTE: It is not mandatory to be up to patch level. The following would be accepted:
+    NOTE: It is not mandatory to be up to patch level. The following would be
+    accepted:
     - 10.1
     - 9
     - 15.0.1a2
@@ -73,7 +75,8 @@ def override_default_env(services_to_override=None):
     :param services_to_override: List of service name strings including
         service version without any separator e.g. ``postgresql11``.
     """
-    services_to_override = set(services_to_override or []).difference(SERVICES.keys())
+    services_to_override = \
+        set(services_to_override or []).difference(SERVICES.keys())
     if services_to_override:
         num_services_to_override = len(services_to_override)
         for service_name in SERVICES:
@@ -83,7 +86,8 @@ def override_default_env(services_to_override=None):
                         service_name, ""
                     )
                     env_var_with_version = (
-                        f"{service_name.upper()}_{service_override_version}_LATEST"
+                        f"{service_name.upper()}_"
+                        f"{service_override_version}_LATEST"
                     )
                     if (SERVICES_ALL_DEFAULT_VERSIONS.get(
                        env_var_with_version)):
@@ -100,8 +104,10 @@ def override_default_env(services_to_override=None):
                             ].values()
                         ]
                         click.secho(
-                            f"No major version {service_override_version} for {service_name}. "
-                            f"Please use one of the available ones: {available_major_versions}",
+                            f"No major version {service_override_version} "
+                            f"for {service_name}. "
+                            "Please use one of the available "
+                            f"ones: {available_major_versions}",
                             fg="red",
                         )
                         exit(1)

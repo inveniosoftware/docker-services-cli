@@ -13,12 +13,8 @@ import os
 import pytest
 
 from docker_services_cli.config import SERVICES
-from docker_services_cli.env import (
-    set_env,
-    _is_version,
-    override_default_env,
-    _load_or_set_env,
-)
+from docker_services_cli.env import _is_version, _load_or_set_env, \
+    override_default_env, set_env
 
 
 def test_is_version():
@@ -75,13 +71,15 @@ def test_setversion_not_set():
 @pytest.mark.parametrize(
     "service_and_version_string,envvar,expected_value",
     [
+        # case in which no version is passed, default value should be used
         (
             "elasticsearch",
             "ELASTICSEARCH_VERSION",
             SERVICES["elasticsearch"]["DEFAULT_VERSIONS"][
                 SERVICES["elasticsearch"]["ELASTICSEARCH_VERSION"]
             ],
-        ),  # case in which no version is passed, default value should be used
+        ),
+        # case in which a wrong version is passed, fails
         pytest.param(
             "postgresql-1",
             "POSTGRESQL_VERSION",
@@ -89,12 +87,13 @@ def test_setversion_not_set():
                 SERVICES["postgresql"]["POSTGRESQL_VERSION"]
             ],
             marks=pytest.mark.xfail,
-        ),  # case in which a wrong version is passed, falls back to default
+        ),
+        # case in which a correct non default version is passed
         (
             "mysql8",
             "MYSQL_VERSION",
             SERVICES["mysql"]["DEFAULT_VERSIONS"]["MYSQL_8_LATEST"],
-        ),  # case in which a correct non default version is passed, should be overriden
+        ),
     ],
 )
 def test_override_default_service_versions(

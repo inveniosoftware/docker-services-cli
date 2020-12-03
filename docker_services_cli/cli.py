@@ -2,14 +2,14 @@
 #
 # Copyright (C) 2020 CERN.
 #
-# Docker-Services-CLI is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# Docker-Services-CLI is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
 
 """CLI module."""
 
 import sys
-from functools import update_wrapper
 from distutils.sysconfig import get_python_lib
+from functools import update_wrapper
 from pathlib import Path
 
 import click
@@ -47,10 +47,12 @@ def env_output(env_set_command):
                 normalize_service_name(s) for s in kwargs.get("services", [])
             ] or SERVICES.keys()
             if env:
-                click.echo(": '")  # comment command output until env export
+                # comment command output until env export
+                click.echo(": '")
             ctx.invoke(func, **kwargs)
             if env:
-                click.echo("'")  # end of multiline comment, start of export statements
+                # end of multiline comment, start of export statements
+                click.echo("'")
                 print_setup_env_config(
                     services,
                     click.get_current_context().info_name,
@@ -92,9 +94,12 @@ def cli(ctx, filepath, verbose):
 
 
 @cli.command()
-@click.argument("services", nargs=-1, required=False)  # -1 incompat with default
+# -1 incompat with default
+@click.argument("services", nargs=-1, required=False)
 @click.option(
-    "--no-wait", is_flag=True, help="Wait for services to be up (use healthchecks).",
+    "--no-wait",
+    is_flag=True,
+    help="Wait for services to be up (use healthchecks).",
 )
 @click.option(
     "--retries",
