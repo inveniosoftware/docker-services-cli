@@ -15,16 +15,16 @@ readme = open("README.rst").read()
 history = open("CHANGES.rst").read()
 
 tests_require = [
-    "check-manifest>=0.25",
-    "isort>=4.3",
-    "pydocstyle>=5.0.0",
-    "pytest>=4.6.1",
+    "pytest-cov>=2.10.1",
+    "check-manifest>=0.42",
+    "pytest-isort>=1.2.0",
+    "pytest-pycodestyle>=2.2.0",
+    "pytest-pydocstyle>=2.2.0",
+    "pytest>=6,<7",
 ]
 
 extras_require = {
-    "docs": [
-        "Sphinx>=1.5.1",
-    ],
+    "docs": ["Sphinx>=2.4",],
     "tests": tests_require,
 }
 
@@ -61,9 +61,7 @@ setup(
     include_package_data=True,
     platforms="any",
     entry_points={
-        "console_scripts": [
-            "docker-services-cli = docker_services_cli.cli:cli",
-        ]
+        "console_scripts": ["docker-services-cli = docker_services_cli.cli:cli",]
     },
     extras_require=extras_require,
     install_requires=install_requires,
