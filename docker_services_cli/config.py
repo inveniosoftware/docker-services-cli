@@ -2,8 +2,8 @@
 #
 # Copyright (C 2020 CERN.
 #
-# Docker-Services-CLI is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# Docker-Services-CLI is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
 
 """Configuration module.
 
@@ -54,7 +54,8 @@ POSTGRESQL = {
         "POSTGRESQL_DB": "invenio",
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio",
+        "SQLALCHEMY_DATABASE_URI":
+        "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio",
     },
 }
 """Postgresql service configuration."""
@@ -62,7 +63,10 @@ POSTGRESQL = {
 # MySQL
 MYSQL = {
     "MYSQL_VERSION": "MYSQL_5_LATEST",
-    "DEFAULT_VERSIONS": {"MYSQL_5_LATEST": "5.7.31", "MYSQL_8_LATEST": "8.0.21"},
+    "DEFAULT_VERSIONS": {
+        "MYSQL_5_LATEST": "5.7.31",
+        "MYSQL_8_LATEST": "8.0.21"
+    },
     "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES": {
         "MYSQL_USER": "invenio",
         "MYSQL_PASSWORD": "invenio",
@@ -70,7 +74,8 @@ MYSQL = {
         "MYSQL_ROOT_PASSWORD": "invenio",
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "SQLALCHEMY_DATABASE_URI": "mysql+pymysql://invenio:invenio@localhost:3306/invenio",
+        "SQLALCHEMY_DATABASE_URI":
+        "mysql+pymysql://invenio:invenio@localhost:3306/invenio",
     },
 }
 """MySQL service configuration."""

@@ -2,14 +2,14 @@
 #
 # Copyright (C) 2020 CERN.
 #
-# Docker-Services-CLI is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# Docker-Services-CLI is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
 
 """Services module."""
 
-from os import path
-from subprocess import check_call, Popen, PIPE
 import time
+from os import path
+from subprocess import PIPE, Popen, check_call
 
 import click
 
@@ -133,7 +133,7 @@ def wait_for_services(services, filepath=DOCKER_SERVICES_FILEPATH,
         ready = check(filepath=filepath, verbose=verbose)
         while not ready and try_ < max_retries:
             click.secho(
-                f"{service} not ready at {try_} retries, waiting " \
+                f"{service} not ready at {try_} retries, waiting "
                 f"{exp_backoff_time}s",
                 fg="yellow"
             )
@@ -158,7 +158,8 @@ def services_up(services, filepath=DOCKER_SERVICES_FILEPATH, wait=True,
     ``--detach`` is not supported in 1.17.0 or previous.
     """
     if not path.exists(filepath):
-        click.secho(f"Filepaht {filepath} for docker-services.yml file does not exist.", fg="red")
+        click.secho(f"Filepaht {filepath} for docker-services.yml file does"
+                    "not exist.", fg="red")
         exit(1)
 
     command = ["docker-compose", "--file", filepath, "up", "-d"]
