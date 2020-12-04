@@ -83,7 +83,10 @@ MYSQL = {
 REDIS = {
     "REDIS_VERSION": "REDIS_6_LATEST",
     "DEFAULT_VERSIONS": {"REDIS_6_LATEST": "6.0.6"},
-    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {"CACHE_TYPE": "redis"},
+    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
+        "BROKER_URL": "redis://localhost:6379/0",
+        "CACHE_TYPE": "redis",
+    },
 }
 """Redis service configuration."""
 
@@ -92,7 +95,6 @@ MEMCACHED = {
     "DEFAULT_VERSIONS": {"MEMCACHED_LATEST": "1.6.6"},
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
         "CACHE_TYPE": "memcached",
-        "BROKER_URL": "redis://localhost:6379/0",
     },
 }
 """Memcached service configuration."""

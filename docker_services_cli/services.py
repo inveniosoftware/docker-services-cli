@@ -83,6 +83,24 @@ def mysql_healthcheck(*args, **kwargs):
     ], verbose)
 
 
+def rabbitmq_healthcheck(*args, **kwargs):
+    """Rabbitmq healthcheck."""
+    filepath = kwargs['filepath']
+    verbose = kwargs['verbose']
+
+    return _run_healthcheck_command([
+        "docker-compose",
+        "--file",
+        filepath,
+        "exec",
+        "-T",
+        "rabbitmq",
+        "bash",
+        "-c",
+        "rabbitmq-diagnostics check_running"
+    ], verbose)
+
+
 def redis_healthcheck(*args, **kwargs):
     """Redis healthcheck."""
     filepath = kwargs['filepath']
@@ -108,6 +126,7 @@ HEALTHCHECKS = {
     "elasticsearch": es_healthcheck,
     "postgresql": postgresql_healthcheck,
     "mysql": mysql_healthcheck,
+    "rabbitmq": rabbitmq_healthcheck,
     "redis": redis_healthcheck,
 }
 """Health check functions module path, as string."""
