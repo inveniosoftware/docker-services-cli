@@ -7,13 +7,28 @@
 
 """Environment module."""
 
+import logging
 import os
 import sys
 from distutils.version import StrictVersion
 
 import click
 
-from .config import SERVICES, SERVICES_ALL_DEFAULT_VERSIONS
+from .config import SERVICE_TYPES, SERVICES, SERVICES_ALL_DEFAULT_VERSIONS
+
+
+def normalize_service_name(service_with_version):
+    """Return the name of the passed service without version number."""
+    service_name = None
+    if service_with_version in SERVICES:
+        service_name = service_with_version
+    else:
+        for name in SERVICES:
+            if name in service_with_version:
+                service_name = name
+                break
+
+    return service_name
 
 
 def _set_default_env(services_version, default_version):
@@ -133,12 +148,13 @@ def set_env():
 def print_setup_env_config(services, called_from, env_set_command="export"):
     """Prints setup environment instructions."""
     should_print_instructions = False
-    for service in services:
-        for key, value in (
-            SERVICES.get(service)
-            .get("CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES", {})
-            .items()
-        ):
+    for service_type, services_list in services.items():
+        if called_from == "up" and len(services_list) > 1:
+            logging.warning("Multiple %s services %s are being configured. "
+                            "Note that only %s will be accessible.",
+                            service_type, services_list, services_list[-1])
+
+        for key, value in get_service_env_vars(service_type, services_list):
             command = f"{env_set_command} {key}"
             if env_set_command == "export":
                 command += f"={value}"
@@ -148,7 +164,27 @@ def print_setup_env_config(services, called_from, env_set_command="export"):
     if should_print_instructions:
         click.secho("# Configure your environment running:", fg="yellow")
         instructions = f'# eval "$(docker-services-cli {called_from}'
-        if called_from == "up":
-            instructions += " " + " ".join(services)
+        if called_from == "up" and services != SERVICE_TYPES:
+            instructions += " " + " ".join(
+                ["--{0} {1}".format(service_type, service)
+                 for service_type, services_list in services.items()
+                 for service in services_list]
+            )
         instructions += ' --env)"'
         click.secho(instructions, fg="yellow")
+
+
+def get_service_env_vars(service_type, services_list):
+    """Get all or a subset of service environment variables."""
+    envvars = []
+    for service in services_list:
+        service_envvars_by_type = (
+            SERVICES.get(normalize_service_name(service))
+            .get("CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES", {})
+            .get(service_type, {})
+            .items()
+        )
+        for key, value in service_envvars_by_type:
+            envvars.append((key, value))
+
+    return envvars
