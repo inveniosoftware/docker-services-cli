@@ -13,7 +13,7 @@ from subprocess import PIPE, Popen, check_call
 
 import click
 
-from .config import DOCKER_SERVICES_FILEPATH, MYSQL, POSTGRESQL
+from .config import DOCKER_SERVICES_FILEPATH, MYSQL, POSTGRESQL, SERVICE_TYPES
 
 
 def _run_healthcheck_command(command, verbose=False):
@@ -68,7 +68,8 @@ def mysql_healthcheck(*args, **kwargs):
     """Mysql healthcheck."""
     filepath = kwargs['filepath']
     verbose = kwargs['verbose']
-    password = MYSQL["MYSQL_ROOT_PASSWORD"]
+    password = \
+        MYSQL["CONTAINER_CONFIG_ENVIRONMENT_VARIABLES"]["MYSQL_ROOT_PASSWORD"]
 
     return _run_healthcheck_command([
         "docker-compose",
@@ -176,6 +177,9 @@ def services_up(services, filepath=DOCKER_SERVICES_FILEPATH, wait=True,
     there is no need to, so --build is not a slow default. In addition
     ``--detach`` is not supported in 1.17.0 or previous.
     """
+    services = services or [service
+                            for _, services in SERVICE_TYPES.items()
+                            for service in services]
     if not path.exists(filepath):
         click.secho(f"Filepaht {filepath} for docker-services.yml file does"
                     "not exist.", fg="red")

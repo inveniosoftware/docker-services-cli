@@ -54,8 +54,8 @@ POSTGRESQL = {
         "POSTGRESQL_DB": "invenio",
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "SQLALCHEMY_DATABASE_URI":
-        "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio",
+        "db": {"SQLALCHEMY_DATABASE_URI":
+               "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"}
     },
 }
 """Postgresql service configuration."""
@@ -74,8 +74,8 @@ MYSQL = {
         "MYSQL_ROOT_PASSWORD": "invenio",
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "SQLALCHEMY_DATABASE_URI":
-        "mysql+pymysql://invenio:invenio@localhost:3306/invenio",
+        "db": {"SQLALCHEMY_DATABASE_URI":
+               "mysql+pymysql://invenio:invenio@localhost:3306/invenio"}
     },
 }
 """MySQL service configuration."""
@@ -84,26 +84,17 @@ REDIS = {
     "REDIS_VERSION": "REDIS_6_LATEST",
     "DEFAULT_VERSIONS": {"REDIS_6_LATEST": "6.0.6"},
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "BROKER_URL": "redis://localhost:6379/0",
-        "CACHE_TYPE": "redis",
+        "mq": {"BROKER_URL": "redis://localhost:6379/0"},
+        "cache": {"CACHE_TYPE": "redis"}
     },
 }
 """Redis service configuration."""
-
-MEMCACHED = {
-    "MEMCACHED_VERSION": "MEMCACHED_LATEST",
-    "DEFAULT_VERSIONS": {"MEMCACHED_LATEST": "1.6.6"},
-    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "CACHE_TYPE": "memcached",
-    },
-}
-"""Memcached service configuration."""
 
 RABBITMQ = {
     "RABBITMQ_VERSION": "RABBITMQ_3_LATEST",
     "DEFAULT_VERSIONS": {"RABBITMQ_3_LATEST": "3.8.7"},
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "BROKER_URL": "amqp://localhost:5672//"
+        "mq": {"BROKER_URL": "amqp://localhost:5672//"}
     },
 }
 """RabbitMQ service configuration."""
@@ -113,7 +104,6 @@ SERVICES = {
     "postgresql": POSTGRESQL,
     "mysql": MYSQL,
     "redis": REDIS,
-    "memcached": MEMCACHED,
     "rabbitmq": RABBITMQ,
 }
 """List of services to configure."""
@@ -123,7 +113,16 @@ SERVICES_ALL_DEFAULT_VERSIONS = {
     **POSTGRESQL.get("DEFAULT_VERSIONS", {}),
     **REDIS.get("DEFAULT_VERSIONS", {}),
     **MYSQL.get("DEFAULT_VERSIONS", {}),
-    **MEMCACHED.get("DEFAULT_VERSIONS", {}),
     **RABBITMQ.get("DEFAULT_VERSIONS", {}),
 }
 """Services default latest versions."""
+
+SERVICE_TYPES = {
+    "search": ["elasticsearch"],
+    "db": ["mysql", "postgresql"],
+    "cache": [
+        "redis",
+    ],
+    "mq": ["rabbitmq", "redis"],
+}
+"""Types of offered services."""
