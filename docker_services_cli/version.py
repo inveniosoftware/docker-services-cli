@@ -11,4 +11,4 @@ This file is imported by ``docker_services_cli.__init__``,
 and parsed by ``setup.py``.
 """
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
