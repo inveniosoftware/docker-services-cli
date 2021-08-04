@@ -200,6 +200,6 @@ def services_down(filepath=DOCKER_SERVICES_FILEPATH):
     It does not requries the services. It stops containers and removes
     containers, networks, volumes, and images created by ``up``.
     """
-    command = ["docker-compose", "--file", filepath, "down"]
+    command = ["docker-compose", "--file", filepath, "down", "--volumes"]
 
     check_call(command)
