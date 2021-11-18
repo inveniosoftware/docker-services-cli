@@ -46,6 +46,19 @@ def es_healthcheck(*args, **kwargs):
     ], verbose)
 
 
+def opensearch_healthcheck(*args, **kwargs):
+    """OpenSearch healthcheck."""
+    verbose = kwargs['verbose']
+
+    return _run_healthcheck_command([
+        "curl",
+        "--fail",
+        "--insecure",
+        "-u", "admin:admin",
+        "https://localhost:9200/_cluster/health?wait_for_status=green"
+    ], verbose)
+
+
 def postgresql_healthcheck(*args, **kwargs):
     """Postgresql healthcheck."""
     filepath = kwargs['filepath']
@@ -125,8 +138,9 @@ def redis_healthcheck(*args, **kwargs):
 
 HEALTHCHECKS = {
     "elasticsearch": es_healthcheck,
-    "postgresql": postgresql_healthcheck,
     "mysql": mysql_healthcheck,
+    "opensearch": opensearch_healthcheck,
+    "postgresql": postgresql_healthcheck,
     "rabbitmq": rabbitmq_healthcheck,
     "redis": redis_healthcheck,
 }

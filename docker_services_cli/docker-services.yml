@@ -47,6 +47,25 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+  opensearch:
+    image: opensearchproject/opensearch:${OPENSEARCH_VERSION}
+    restart: "unless-stopped"
+    environment:
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - plugins.security.audit.type=debug
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    mem_limit: 3g
+    ports:
+      - "9200:9200"
+      - "9600:9600"
   rabbitmq:
     image: rabbitmq:3-management
     restart: "unless-stopped"

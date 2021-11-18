@@ -38,6 +38,20 @@ ELASTICSEARCH = {
 }
 """Elasticsearch service configuration."""
 
+OPENSEARCH = {
+    "OPENSEARCH_VERSION": "OPENSEARCH_1_LATEST",
+    "DEFAULT_VERSIONS": {
+        "OPENSEARCH_1_LATEST": "1.1.0",
+    },
+    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
+        "search": {
+            "OPENSEARCH_CLIENT_URI": "https://admin:admin@localhost:9200",
+            "OPENSEARCH_CLIENT_INSECURE": "enabled",
+        }
+    },
+}
+"""OpenSearch service configuration."""
+
 # PostrgreSQL
 POSTGRESQL = {
     "POSTGRESQL_VERSION": "POSTGRESQL_9_LATEST",
@@ -101,15 +115,17 @@ RABBITMQ = {
 
 SERVICES = {
     "elasticsearch": ELASTICSEARCH,
-    "postgresql": POSTGRESQL,
     "mysql": MYSQL,
-    "redis": REDIS,
+    "opensearch": OPENSEARCH,
+    "postgresql": POSTGRESQL,
     "rabbitmq": RABBITMQ,
+    "redis": REDIS,
 }
 """List of services to configure."""
 
 SERVICES_ALL_DEFAULT_VERSIONS = {
     **ELASTICSEARCH.get("DEFAULT_VERSIONS", {}),
+    **OPENSEARCH.get("DEFAULT_VERSIONS", {}),
     **POSTGRESQL.get("DEFAULT_VERSIONS", {}),
     **REDIS.get("DEFAULT_VERSIONS", {}),
     **MYSQL.get("DEFAULT_VERSIONS", {}),
@@ -118,7 +134,7 @@ SERVICES_ALL_DEFAULT_VERSIONS = {
 """Services default latest versions."""
 
 SERVICE_TYPES = {
-    "search": ["elasticsearch"],
+    "search": ["elasticsearch", "opensearch"],
     "db": ["mysql", "postgresql"],
     "cache": [
         "redis",
