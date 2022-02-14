@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C 2020 CERN.
+# Copyright (C) 2020-2022 CERN.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -40,13 +40,14 @@ ELASTICSEARCH = {
 
 # PostrgreSQL
 POSTGRESQL = {
-    "POSTGRESQL_VERSION": "POSTGRESQL_9_LATEST",
+    "POSTGRESQL_VERSION": "POSTGRESQL_12_LATEST",
     "DEFAULT_VERSIONS": {
-        "POSTGRESQL_9_LATEST": "9.6.19",
-        "POSTGRESQL_10_LATEST": "10.14",
-        "POSTGRESQL_11_LATEST": "11.9",
-        "POSTGRESQL_12_LATEST": "12.4",
-        "POSTGRESQL_13_LATEST": "13.0",
+        "POSTGRESQL_9_LATEST": "9.6.24",  # deprecated, reached end of life
+        "POSTGRESQL_10_LATEST": "10.20",
+        "POSTGRESQL_11_LATEST": "11.15",
+        "POSTGRESQL_12_LATEST": "12.10",
+        "POSTGRESQL_13_LATEST": "13.6",
+        "POSTGRESQL_14_LATEST": "14.2",
     },
     "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES": {
         "POSTGRESQL_USER": "invenio",
