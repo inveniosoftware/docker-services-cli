@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2020-2022 CERN.
+# Copyright (C) 2022 University Münster.
+# Copyright (C) 2022 TU Wien.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -11,13 +13,13 @@ The specific version for the services can be set through environment variables
 
 .. code-block:: console
 
-    $ export ES_VERSION=7.2.0
+    $ export OPENSEARCH_VERSION=1.3.3
 
 It can also use the centrally managed (supported) major version:
 
 .. code-block:: console
 
-    $ export ES_VERSION=ES_7_LATEST
+    $ export OPENSEARCH_VERSION=OS_1_LATEST
 
 Then it simply needs to boot up the services. Note that if no version was
 exported in the environment, the CLI will use the default values set in
@@ -25,7 +27,7 @@ exported in the environment, the CLI will use the default values set in
 
 .. code-block:: console
 
-    $ docker-services-cli up es postgresql redis
+    $ docker-services-cli up os postgresql redis
 
 And turn them of once they are not needed anymore:
 

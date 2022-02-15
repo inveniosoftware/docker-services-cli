@@ -32,13 +32,21 @@ DOCKER_SERVICES_FILEPATH = "docker_services_cli/docker-services.yml"
 ELASTICSEARCH = {
     "ELASTICSEARCH_VERSION": "ELASTICSEARCH_7_LATEST",
     "DEFAULT_VERSIONS": {
-        "ELASTICSEARCH_6_LATEST": "6.8.12",
-        "ELASTICSEARCH_7_LATEST": "7.9.0",
+        "ELASTICSEARCH_7_LATEST": "7.10.2",  # the last of the OSS versions (https://github.com/elastic/elasticsearch/issues/58303)
     },
 }
 """Elasticsearch service configuration."""
 
-# PostrgreSQL
+# Opensearch
+OPENSEARCH = {
+    "OPENSEARCH_VERSION": "OPENSEARCH_1_LATEST",
+    "DEFAULT_VERSIONS": {
+        "OPENSEARCH_1_LATEST": "1.3.3",
+    },
+}
+"""Opensearch service configuration."""
+
+# PostgreSQL
 POSTGRESQL = {
     "POSTGRESQL_VERSION": "POSTGRESQL_12_LATEST",
     "DEFAULT_VERSIONS": {
@@ -101,6 +109,7 @@ RABBITMQ = {
 
 SERVICES = {
     "elasticsearch": ELASTICSEARCH,
+    "opensearch": OPENSEARCH,
     "postgresql": POSTGRESQL,
     "mysql": MYSQL,
     "redis": REDIS,
@@ -110,6 +119,7 @@ SERVICES = {
 
 SERVICES_ALL_DEFAULT_VERSIONS = {
     **ELASTICSEARCH.get("DEFAULT_VERSIONS", {}),
+    **OPENSEARCH.get("DEFAULT_VERSIONS", {}),
     **POSTGRESQL.get("DEFAULT_VERSIONS", {}),
     **REDIS.get("DEFAULT_VERSIONS", {}),
     **MYSQL.get("DEFAULT_VERSIONS", {}),
@@ -118,7 +128,7 @@ SERVICES_ALL_DEFAULT_VERSIONS = {
 """Services default latest versions."""
 
 SERVICE_TYPES = {
-    "search": ["elasticsearch"],
+    "search": ["opensearch", "elasticsearch"],
     "db": ["mysql", "postgresql"],
     "cache": [
         "redis",
