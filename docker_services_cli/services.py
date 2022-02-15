@@ -34,8 +34,8 @@ def _run_healthcheck_command(command, verbose=False):
         return False
 
 
-def es_healthcheck(*args, **kwargs):
-    """Elasticsearch healthcheck."""
+def search_healthcheck(*args, **kwargs):
+    """{Elastic,Open}Search healthcheck."""
     verbose = kwargs["verbose"]
 
     return _run_healthcheck_command(
@@ -132,7 +132,8 @@ def redis_healthcheck(*args, **kwargs):
 
 
 HEALTHCHECKS = {
-    "elasticsearch": es_healthcheck,
+    "elasticsearch": search_healthcheck,
+    "opensearch": search_healthcheck,
     "postgresql": postgresql_healthcheck,
     "mysql": mysql_healthcheck,
     "rabbitmq": rabbitmq_healthcheck,
@@ -192,7 +193,7 @@ def services_up(
     ]
     if not path.exists(filepath):
         click.secho(
-            f"Filepaht {filepath} for docker-services.yml file does" "not exist.",
+            f"Filepath {filepath} for docker-services.yml file does not exist.",
             fg="red",
         )
         exit(1)
