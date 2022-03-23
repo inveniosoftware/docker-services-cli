@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version 0.4.1 (released 2022-02-23)
+
+- Removes upper bound on Click which causes projects where docker-services-cli
+  is installed to limit Celery to v5.1.x because Celery v5.2 requires Click 8+.
+
 Version 0.4.0 (released 2022-02-15)
 
 - Changes default version of Postgres to v12.
