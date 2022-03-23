@@ -24,7 +24,7 @@ tests_require = [
 ]
 
 extras_require = {
-    "docs": ["Sphinx>=2.4",],
+    "docs": ["Sphinx>=4.2.0,<5",],
     "tests": tests_require,
 }
 
@@ -34,7 +34,7 @@ for reqs in extras_require.values():
 
 
 install_requires = [
-    "click>=7.0,<8.0",
+    "click>=7.0",
 ]
 
 packages = find_packages()
