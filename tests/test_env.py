@@ -13,8 +13,12 @@ import os
 import pytest
 
 from docker_services_cli.config import SERVICES
-from docker_services_cli.env import _is_version, _load_or_set_env, \
-    override_default_env, set_env
+from docker_services_cli.env import (
+    _is_version,
+    _load_or_set_env,
+    override_default_env,
+    set_env,
+)
 
 
 def test_is_version():

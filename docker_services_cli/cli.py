@@ -13,8 +13,12 @@ from functools import update_wrapper
 import click
 
 from .config import SERVICE_TYPES
-from .env import normalize_service_name, override_default_env, \
-    print_setup_env_config, set_env
+from .env import (
+    normalize_service_name,
+    override_default_env,
+    print_setup_env_config,
+    set_env,
+)
 from .services import services_down, services_up
 
 
@@ -85,8 +89,9 @@ def services_by_type(func):
                 raise click.BadParameter(
                     "{service} is not a valid service of type {type}. "
                     "Try one of: \n{available_services}".format(
-                        service=service, type=service_type.name,
-                        available_services=available_services
+                        service=service,
+                        type=service_type.name,
+                        available_services=available_services,
                     )
                 )
         return list(services_list)
@@ -97,10 +102,9 @@ def services_by_type(func):
             callback=validate_service_name,
             multiple=True,
             help="Specify which service should run as {0}. "
-                 "Available {0} services: {1}.".format(
-                     service_type,
-                     ", ".join(SERVICE_TYPES.get(service_type))
-                 )
+            "Available {0} services: {1}.".format(
+                service_type, ", ".join(SERVICE_TYPES.get(service_type))
+            ),
         )(func)
 
     return update_wrapper(collect_services_by_type, func)
@@ -126,7 +130,10 @@ class ServicesCtx(object):
     help="Path to a docker compose file with the desired services definition.",
 )
 @click.option(
-    "--verbose", is_flag=True, default=False, help="Verbose output.",
+    "--verbose",
+    is_flag=True,
+    default=False,
+    help="Verbose output.",
 )
 @click.pass_context
 def cli(ctx, filepath, verbose):
@@ -158,8 +165,7 @@ def up(services_ctx, services, no_wait, retries):
 
     Note: All services will be boot up if no service is specified.
     """
-    _services = [s for services_list in services.values()
-                 for s in services_list]
+    _services = [s for services_list in services.values() for s in services_list]
 
     # NOTE: docker-compose boots up all if none is provided
     if len(_services) == 1 and _services[0].lower() == "all":

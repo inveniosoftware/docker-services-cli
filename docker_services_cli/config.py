@@ -55,8 +55,9 @@ POSTGRESQL = {
         "POSTGRESQL_DB": "invenio",
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "db": {"SQLALCHEMY_DATABASE_URI":
-               "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"}
+        "db": {
+            "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"
+        }
     },
 }
 """Postgresql service configuration."""
@@ -64,10 +65,7 @@ POSTGRESQL = {
 # MySQL
 MYSQL = {
     "MYSQL_VERSION": "MYSQL_5_LATEST",
-    "DEFAULT_VERSIONS": {
-        "MYSQL_5_LATEST": "5.7.31",
-        "MYSQL_8_LATEST": "8.0.21"
-    },
+    "DEFAULT_VERSIONS": {"MYSQL_5_LATEST": "5.7.31", "MYSQL_8_LATEST": "8.0.21"},
     "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES": {
         "MYSQL_USER": "invenio",
         "MYSQL_PASSWORD": "invenio",
@@ -75,8 +73,9 @@ MYSQL = {
         "MYSQL_ROOT_PASSWORD": "invenio",
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "db": {"SQLALCHEMY_DATABASE_URI":
-               "mysql+pymysql://invenio:invenio@localhost:3306/invenio"}
+        "db": {
+            "SQLALCHEMY_DATABASE_URI": "mysql+pymysql://invenio:invenio@localhost:3306/invenio"
+        }
     },
 }
 """MySQL service configuration."""
@@ -86,7 +85,7 @@ REDIS = {
     "DEFAULT_VERSIONS": {"REDIS_6_LATEST": "6.0.6"},
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
         "mq": {"BROKER_URL": "redis://localhost:6379/0"},
-        "cache": {"CACHE_TYPE": "redis"}
+        "cache": {"CACHE_TYPE": "redis"},
     },
 }
 """Redis service configuration."""

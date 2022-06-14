@@ -33,8 +33,7 @@ def normalize_service_name(service_with_version):
 
 def _set_default_env(services_version, default_version):
     """Set environmental variable value if it does not exist."""
-    os.environ[services_version] = os.environ.get(
-        services_version, default_version)
+    os.environ[services_version] = os.environ.get(services_version, default_version)
 
 
 def _is_version(version):
@@ -90,8 +89,7 @@ def override_default_env(services_to_override=None):
     :param services_to_override: List of service name strings including
         service version without any separator e.g. ``postgresql11``.
     """
-    services_to_override = \
-        set(services_to_override or []).difference(SERVICES.keys())
+    services_to_override = set(services_to_override or []).difference(SERVICES.keys())
     if services_to_override:
         num_services_to_override = len(services_to_override)
         for service_name in SERVICES:
@@ -101,22 +99,16 @@ def override_default_env(services_to_override=None):
                         service_name, ""
                     )
                     env_var_with_version = (
-                        f"{service_name.upper()}_"
-                        f"{service_override_version}_LATEST"
+                        f"{service_name.upper()}_" f"{service_override_version}_LATEST"
                     )
-                    if (SERVICES_ALL_DEFAULT_VERSIONS.get(
-                       env_var_with_version)):
+                    if SERVICES_ALL_DEFAULT_VERSIONS.get(env_var_with_version):
                         os.environ[
                             f"{service_name.upper()}_VERSION"
-                        ] = SERVICES_ALL_DEFAULT_VERSIONS.get(
-                            env_var_with_version
-                        )
+                        ] = SERVICES_ALL_DEFAULT_VERSIONS.get(env_var_with_version)
                     else:
                         available_major_versions = [
                             v.split(".")[0]
-                            for v in SERVICES[service_name][
-                                "DEFAULT_VERSIONS"
-                            ].values()
+                            for v in SERVICES[service_name]["DEFAULT_VERSIONS"].values()
                         ]
                         click.secho(
                             f"No major version {service_override_version} "
@@ -150,9 +142,13 @@ def print_setup_env_config(services, called_from, env_set_command="export"):
     should_print_instructions = False
     for service_type, services_list in services.items():
         if called_from == "up" and len(services_list) > 1:
-            logging.warning("Multiple %s services %s are being configured. "
-                            "Note that only %s will be accessible.",
-                            service_type, services_list, services_list[-1])
+            logging.warning(
+                "Multiple %s services %s are being configured. "
+                "Note that only %s will be accessible.",
+                service_type,
+                services_list,
+                services_list[-1],
+            )
 
         for key, value in get_service_env_vars(service_type, services_list):
             command = f"{env_set_command} {key}"
@@ -166,9 +162,11 @@ def print_setup_env_config(services, called_from, env_set_command="export"):
         instructions = f'# eval "$(docker-services-cli {called_from}'
         if called_from == "up" and services != SERVICE_TYPES:
             instructions += " " + " ".join(
-                ["--{0} {1}".format(service_type, service)
-                 for service_type, services_list in services.items()
-                 for service in services_list]
+                [
+                    "--{0} {1}".format(service_type, service)
+                    for service_type, services_list in services.items()
+                    for service in services_list
+                ]
             )
         instructions += ' --env)"'
         click.secho(instructions, fg="yellow")
