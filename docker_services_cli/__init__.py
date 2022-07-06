@@ -13,7 +13,7 @@ The specific version for the services can be set through environment variables
 
 .. code-block:: console
 
-    $ export OPENSEARCH_VERSION=1.3.3
+    $ export OPENSEARCH_VERSION=1.3.4
 
 It can also use the centrally managed (supported) major version:
 
@@ -27,7 +27,7 @@ exported in the environment, the CLI will use the default values set in
 
 .. code-block:: console
 
-    $ docker-services-cli up --search os --db postgresql --cache redis
+    $ docker-services-cli up --search opensearch --db postgresql --cache redis
 
 And turn them of once they are not needed anymore:
 
