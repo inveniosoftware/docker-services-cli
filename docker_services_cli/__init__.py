@@ -27,7 +27,7 @@ exported in the environment, the CLI will use the default values set in
 
 .. code-block:: console
 
-    $ docker-services-cli up os postgresql redis
+    $ docker-services-cli up --search os --db postgresql --cache redis
 
 And turn them of once they are not needed anymore:
 

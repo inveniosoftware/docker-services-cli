@@ -160,8 +160,8 @@ def cli(ctx, filepath, verbose):
 def up(services_ctx, services, no_wait, retries):
     r"""Boots up the required services.
 
-    Example: \n
-    \t $ docker-services-cli up --db postgresql11
+    Example:
+        $ docker-services-cli up --db postgresql11
 
     Note: All services will be boot up if no service is specified.
     """
@@ -189,6 +189,6 @@ def up(services_ctx, services, no_wait, retries):
 @env_output(env_set_command="unset")
 @click.pass_obj
 def down(services_ctx):
-    """Boots down the required services."""
+    """Shuts down the required services."""
     services_down(filepath=services_ctx.filepath)
     click.secho("Services down!", fg="green")
