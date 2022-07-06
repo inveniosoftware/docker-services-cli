@@ -7,8 +7,8 @@
 
 """CLI module."""
 
-from distutils.sysconfig import get_python_lib
 from functools import update_wrapper
+from pathlib import Path
 
 import click
 
@@ -20,6 +20,12 @@ from .env import (
     set_env,
 )
 from .services import services_down, services_up
+
+
+def _get_module_path():
+    """Gets the path in which the module is installed."""
+    parent_path = Path(__file__).parent
+    return str(parent_path)
 
 
 def env_output(env_set_command):
@@ -125,7 +131,7 @@ class ServicesCtx(object):
     "--filepath",
     "-f",
     required=False,
-    default=f"{get_python_lib()}/docker_services_cli/docker-services.yml",
+    default=f"{_get_module_path()}/docker-services.yml",
     type=click.Path(exists=True),
     help="Path to a docker compose file with the desired services definition.",
 )

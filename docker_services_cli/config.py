@@ -25,7 +25,7 @@ This means that the environment set/load logic will first set the default
 versions before loading a given service's version.
 """
 
-DOCKER_SERVICES_FILEPATH = "docker_services_cli/docker-services.yml"
+DOCKER_SERVICES_FILEPATH = "docker-services.yml"
 """Docker services file default path."""
 
 # Elasticsearch
@@ -41,7 +41,7 @@ ELASTICSEARCH = {
 OPENSEARCH = {
     "OPENSEARCH_VERSION": "OPENSEARCH_1_LATEST",
     "DEFAULT_VERSIONS": {
-        "OPENSEARCH_1_LATEST": "1.3.3",
+        "OPENSEARCH_1_LATEST": "1.3.4",
     },
 }
 """Opensearch service configuration."""
