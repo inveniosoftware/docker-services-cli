@@ -81,8 +81,8 @@ MYSQL = {
 """MySQL service configuration."""
 
 REDIS = {
-    "REDIS_VERSION": "REDIS_6_LATEST",
-    "DEFAULT_VERSIONS": {"REDIS_6_LATEST": "6.0.6"},
+    "REDIS_VERSION": "REDIS_7_LATEST",
+    "DEFAULT_VERSIONS": {"REDIS_6_LATEST": "6", "REDIS_7_LATEST": "7"},
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
         "mq": {"BROKER_URL": "redis://localhost:6379/0"},
         "cache": {"CACHE_TYPE": "redis"},
@@ -92,7 +92,7 @@ REDIS = {
 
 RABBITMQ = {
     "RABBITMQ_VERSION": "RABBITMQ_3_LATEST",
-    "DEFAULT_VERSIONS": {"RABBITMQ_3_LATEST": "3.8.7"},
+    "DEFAULT_VERSIONS": {"RABBITMQ_3_LATEST": "3"},
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
         "mq": {"BROKER_URL": "amqp://localhost:5672//"}
     },
