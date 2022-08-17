@@ -7,6 +7,12 @@
 Changes
 =======
 
+Version 0.4.2 (released 2022-08-17)
+
+- Upgrades Redis and MQ to latest version
+- Supports min version of Python to 3.7
+- Formats code with Black
+
 Version 0.4.1 (released 2022-02-23)
 
 - Removes upper bound on Click which causes projects where docker-services-cli
