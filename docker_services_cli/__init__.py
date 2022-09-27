@@ -13,13 +13,13 @@ The specific version for the services can be set through environment variables
 
 .. code-block:: console
 
-    $ export OPENSEARCH_VERSION=1.3.4
+    $ export OPENSEARCH_VERSION=2.3.0
 
 It can also use the centrally managed (supported) major version:
 
 .. code-block:: console
 
-    $ export OPENSEARCH_VERSION=OS_1_LATEST
+    $ export OPENSEARCH_VERSION=OPENSEARCH_2_LATEST
 
 Then it simply needs to boot up the services. Note that if no version was
 exported in the environment, the CLI will use the default values set in

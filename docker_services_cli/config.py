@@ -39,9 +39,10 @@ ELASTICSEARCH = {
 
 # Opensearch
 OPENSEARCH = {
-    "OPENSEARCH_VERSION": "OPENSEARCH_1_LATEST",
+    "OPENSEARCH_VERSION": "OPENSEARCH_2_LATEST",
     "DEFAULT_VERSIONS": {
-        "OPENSEARCH_1_LATEST": "1.3.4",
+        "OPENSEARCH_1_LATEST": "1.3.5",
+        "OPENSEARCH_2_LATEST": "2.3.0",
     },
 }
 """Opensearch service configuration."""
