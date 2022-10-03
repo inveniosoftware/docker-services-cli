@@ -7,9 +7,13 @@
 Changes
 =======
 
+Version 0.6.0 (released 2022-10-03)
+
+- Adds OpenSearch v2
+
 Version 0.5.0 (released 2022-08-30)
 
-- Adds OpenSearch
+- Adds OpenSearch v1
 - Removes Elasticsearch 6
 
 Version 0.4.2 (released 2022-08-17)
