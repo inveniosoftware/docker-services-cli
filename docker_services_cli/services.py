@@ -50,7 +50,8 @@ def postgresql_healthcheck(*args, **kwargs):
 
     return _run_healthcheck_command(
         [
-            "docker-compose",
+            "docker",
+            "compose",
             "--file",
             filepath,
             "exec",
@@ -72,7 +73,8 @@ def mysql_healthcheck(*args, **kwargs):
 
     return _run_healthcheck_command(
         [
-            "docker-compose",
+            "docker",
+            "compose",
             "--file",
             filepath,
             "exec",
@@ -93,7 +95,8 @@ def rabbitmq_healthcheck(*args, **kwargs):
 
     return _run_healthcheck_command(
         [
-            "docker-compose",
+            "docker",
+            "compose",
             "--file",
             filepath,
             "exec",
@@ -114,7 +117,8 @@ def redis_healthcheck(*args, **kwargs):
 
     return _run_healthcheck_command(
         [
-            "docker-compose",
+            "docker",
+            "compose",
             "--file",
             filepath,
             "exec",
@@ -149,7 +153,7 @@ def wait_for_services(
 
     It performs configured healthchecks in a serial fashion, following the
     order given in the ``up`` command. If the services is an empty list, to be
-    compliant with `docker-compose` it will perform the healthchecks of all the
+    compliant with `docker compose` it will perform the healthchecks of all the
     services.
     """
     if len(services) == 0:
@@ -184,7 +188,7 @@ def services_up(
 ):
     """Start the given services up.
 
-    docker-compose is smart about not rebuilding an image if
+    docker compose is smart about not rebuilding an image if
     there is no need to, so --build is not a slow default. In addition
     ``--detach`` is not supported in 1.17.0 or previous.
     """
@@ -198,7 +202,7 @@ def services_up(
         )
         exit(1)
 
-    command = ["docker-compose", "--file", filepath, "up", "-d"]
+    command = ["docker", "compose", "--file", filepath, "up", "-d"]
     command.extend(services)
 
     check_call(command)
@@ -212,6 +216,6 @@ def services_down(filepath=DOCKER_SERVICES_FILEPATH):
     It does not requries the services. It stops containers and removes
     containers, networks, volumes, and images created by ``up``.
     """
-    command = ["docker-compose", "--file", filepath, "down", "--volumes"]
+    command = ["docker", "compose", "--file", filepath, "down", "--volumes"]
 
     check_call(command)
