@@ -7,6 +7,10 @@
 Changes
 =======
 
+Version 0.7.0 (released 2023-09-02)
+
+- Upgrades Postgres and MySQL versions
+
 Version 0.6.1 (released 2023-03-20)
 
 - Adds back support for Python 3.6
