@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version 0.7.1 (released 2023-09-05)
+
+- Revert Postgres v11 version to stick to the one published on DockerHub
+  without the leading `-<debian version>` tagging
+
 Version 0.7.0 (released 2023-09-02)
 
 - Upgrades Postgres and MySQL versions

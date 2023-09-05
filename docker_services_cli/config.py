@@ -51,7 +51,7 @@ OPENSEARCH = {
 POSTGRESQL = {
     "POSTGRESQL_VERSION": "POSTGRESQL_14_LATEST",
     "DEFAULT_VERSIONS": {
-        "POSTGRESQL_11_LATEST": "11.21",
+        "POSTGRESQL_11_LATEST": "11.15",  # 11.21 is published on DockerHub ONLY with `-<debian-version>`, which breaks `invenio-cli`
         "POSTGRESQL_12_LATEST": "12.16",
         "POSTGRESQL_13_LATEST": "13.12",
         "POSTGRESQL_14_LATEST": "14.9",
