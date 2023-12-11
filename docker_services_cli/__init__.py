@@ -3,6 +3,7 @@
 # Copyright (C) 2020-2022 CERN.
 # Copyright (C) 2022 University Münster.
 # Copyright (C) 2022 TU Wien.
+# Copyright (C) 2023 Graz University of Technology.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -36,6 +37,6 @@ And turn them of once they are not needed anymore:
     $ docker-services-cli down
 """
 
-__version__ = "0.7.1"
+__version__ = "0.8.0"
 
 __all__ = ("__version__",)
