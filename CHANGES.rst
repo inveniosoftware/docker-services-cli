@@ -1,11 +1,16 @@
 ..
     Copyright (C) 2020-2023 CERN.
+    Copyright (C) 2023 Graz University of Technology.
 
     Docker-Services-CLI is free software; you can redistribute it and/or modify
     it under the terms of the MIT License; see LICENSE file for more details.
 
 Changes
 =======
+
+Version 0.8.0 (released 2023-12-11)
+
+- docker: move to docker compose v2
 
 Version 0.7.1 (released 2023-09-05)
 
