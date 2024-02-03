@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2020 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -102,9 +103,9 @@ def override_default_env(services_to_override=None):
                         f"{service_name.upper()}_" f"{service_override_version}_LATEST"
                     )
                     if SERVICES_ALL_DEFAULT_VERSIONS.get(env_var_with_version):
-                        os.environ[
-                            f"{service_name.upper()}_VERSION"
-                        ] = SERVICES_ALL_DEFAULT_VERSIONS.get(env_var_with_version)
+                        os.environ[f"{service_name.upper()}_VERSION"] = (
+                            SERVICES_ALL_DEFAULT_VERSIONS.get(env_var_with_version)
+                        )
                     else:
                         available_major_versions = [
                             v.split(".")[0]
