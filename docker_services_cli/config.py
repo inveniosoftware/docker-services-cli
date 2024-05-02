@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2020-2022 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -42,20 +43,18 @@ OPENSEARCH = {
     "OPENSEARCH_VERSION": "OPENSEARCH_2_LATEST",
     "DEFAULT_VERSIONS": {
         "OPENSEARCH_1_LATEST": "1.3.5",
-        "OPENSEARCH_2_LATEST": "2.3.0",
+        "OPENSEARCH_2_LATEST": "2.13.0",
     },
 }
 """Opensearch service configuration."""
 
 # PostgreSQL
 POSTGRESQL = {
-    "POSTGRESQL_VERSION": "POSTGRESQL_14_LATEST",
+    "POSTGRESQL_VERSION": "POSTGRESQL_16_LATEST",
     "DEFAULT_VERSIONS": {
-        "POSTGRESQL_11_LATEST": "11.15",  # 11.21 is published on DockerHub ONLY with `-<debian-version>`, which breaks `invenio-cli`
-        "POSTGRESQL_12_LATEST": "12.16",
-        "POSTGRESQL_13_LATEST": "13.12",
         "POSTGRESQL_14_LATEST": "14.9",
         "POSTGRESQL_15_LATEST": "15.4",
+        "POSTGRESQL_16_LATEST": "16.2",
     },
     "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES": {
         "POSTGRESQL_USER": "invenio",
@@ -73,7 +72,7 @@ POSTGRESQL = {
 # MySQL
 MYSQL = {
     "MYSQL_VERSION": "MYSQL_8_LATEST",
-    "DEFAULT_VERSIONS": {"MYSQL_5_LATEST": "5.7", "MYSQL_8_LATEST": "8.1"},
+    "DEFAULT_VERSIONS": {"MYSQL_8_LATEST": "8.3"},
     "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES": {
         "MYSQL_USER": "invenio",
         "MYSQL_PASSWORD": "invenio",
@@ -90,7 +89,10 @@ MYSQL = {
 
 REDIS = {
     "REDIS_VERSION": "REDIS_7_LATEST",
-    "DEFAULT_VERSIONS": {"REDIS_6_LATEST": "6", "REDIS_7_LATEST": "7"},
+    "DEFAULT_VERSIONS": {
+        "REDIS_6_LATEST": "6",
+        "REDIS_7_LATEST": "7",
+    },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
         "mq": {"BROKER_URL": "redis://localhost:6379/0"},
         "cache": {"CACHE_TYPE": "redis"},
