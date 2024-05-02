@@ -12,7 +12,7 @@ services:
     restart: "unless-stopped"
     read_only: true
     ports:
-      - "6379:6379"
+      - "6380:6379"
   mysql:
     image: mysql:${MYSQL_VERSION}
     restart: "unless-stopped"
@@ -31,7 +31,7 @@ services:
       - "POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}"
       - "POSTGRES_DB=${POSTGRESQL_DB}"
     ports:
-      - "5432:5432"
+      - "5433:5432"
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:${ELASTICSEARCH_VERSION}
     restart: "unless-stopped"
@@ -45,8 +45,8 @@ services:
         hard: -1
     mem_limit: 2g
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "9201:9200"
+      - "9301:9300"
   opensearch:
     image: opensearchproject/opensearch:${OPENSEARCH_VERSION}
     restart: "unless-stopped"
@@ -65,11 +65,11 @@ services:
         hard: 65536
     mem_limit: 2g
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "9201:9200"
+      - "9301:9300"
   rabbitmq:
     image: rabbitmq:${RABBITMQ_VERSION}-management
     restart: "unless-stopped"
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - "15673:15672"
+      - "5673:5672"
