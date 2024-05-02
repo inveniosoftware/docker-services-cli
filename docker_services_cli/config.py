@@ -64,7 +64,7 @@ POSTGRESQL = {
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
         "db": {
-            "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"
+            "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://invenio:invenio@localhost:5433/invenio"
         }
     },
 }
@@ -92,7 +92,7 @@ REDIS = {
     "REDIS_VERSION": "REDIS_7_LATEST",
     "DEFAULT_VERSIONS": {"REDIS_6_LATEST": "6", "REDIS_7_LATEST": "7"},
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "mq": {"BROKER_URL": "redis://localhost:6379/0"},
+        "mq": {"BROKER_URL": "redis://localhost:6380/0"},
         "cache": {"CACHE_TYPE": "redis"},
     },
 }
@@ -102,7 +102,7 @@ RABBITMQ = {
     "RABBITMQ_VERSION": "RABBITMQ_3_LATEST",
     "DEFAULT_VERSIONS": {"RABBITMQ_3_LATEST": "3"},
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "mq": {"BROKER_URL": "amqp://localhost:5672//"}
+        "mq": {"BROKER_URL": "amqp://localhost:5673//"}
     },
 }
 """RabbitMQ service configuration."""
