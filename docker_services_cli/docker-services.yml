@@ -53,6 +53,7 @@ services:
     environment:
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "OPENSEARCH_INITIAL_ADMIN_PASSWORD=guekxe3mvqieke1!%&ieIADE"
       - discovery.type=single-node
       - plugins.security.disabled=true
     ulimits:
