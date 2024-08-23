@@ -1,5 +1,5 @@
 ..
-    Copyright (C) 2020-2023 CERN.
+    Copyright (C) 2020-2024 CERN.
     Copyright (C) 2023 Graz University of Technology.
     Copyright (C) 2024 TU Wien.
 
@@ -8,6 +8,10 @@
 
 Changes
 =======
+
+Version 0.10.0 (released 2024-08-23)
+
+- Updated OpenSearch versions
 
 Version 0.9.0 (released 2024-06-27)
 
