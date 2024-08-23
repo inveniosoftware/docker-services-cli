@@ -173,7 +173,7 @@ def up(services_ctx, services, no_wait, retries):
     """
     _services = [s for services_list in services.values() for s in services_list]
 
-    # NOTE: docker-compose boots up all if none is provided
+    # NOTE: docker compose boots up all if none is provided
     if len(_services) == 1 and _services[0].lower() == "all":
         _services = []
 
