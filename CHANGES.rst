@@ -9,9 +9,14 @@
 Changes
 =======
 
+Version 0.10.1 (released 2024-08-23)
+
+- Adds the missing OPENSEARCH_INITIAL_ADMIN_PASSWORD env var for newer versions
+  of OpenSearch
+
 Version 0.10.0 (released 2024-08-23)
 
-- Updated OpenSearch versions
+- Updates OpenSearch versions
 
 Version 0.9.0 (released 2024-06-27)
 
