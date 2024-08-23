@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2020 CERN.
+# Copyright (C) 2020-2024 CERN.
 # Copyright (C) 2022-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
@@ -26,10 +26,10 @@ on:
 
 jobs:
   Tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-          python-version: ["3.9", "3.10", "3.11", "3.12"]
+          python-version: ["3.9", "3.12"]
     env:
       EXTRAS: tests
     steps:
@@ -48,7 +48,7 @@ jobs:
           pip install .[$EXTRAS]
           pip freeze
           docker --version
-          docker-compose --version
+          docker compose version
 
       - name: Run tests
         run: |
