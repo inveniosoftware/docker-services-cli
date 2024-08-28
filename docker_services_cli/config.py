@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020-2022 CERN.
+# Copyright (C) 2020-2024 CERN.
 # Copyright (C) 2024 Graz University of Technology.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
@@ -12,7 +12,7 @@ Configuration values (e.g. service configuration) need to be set through
 environment variables. However, sane defaults are provided below.
 
 The list of services to be configured is taken from ``SERVICES``. Each one
-should contain a ``<SERVICE_NAME>_VERSION`` varaible.
+should contain a ``<SERVICE_NAME>_VERSION`` variable.
 
 Service's version are treated slightly different:
 
@@ -42,8 +42,8 @@ ELASTICSEARCH = {
 OPENSEARCH = {
     "OPENSEARCH_VERSION": "OPENSEARCH_2_LATEST",
     "DEFAULT_VERSIONS": {
-        "OPENSEARCH_1_LATEST": "1.3.5",
-        "OPENSEARCH_2_LATEST": "2.13.0",
+        "OPENSEARCH_1_LATEST": "1.3.18",
+        "OPENSEARCH_2_LATEST": "2.16.0",
     },
 }
 """Opensearch service configuration."""

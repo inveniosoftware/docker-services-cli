@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020-2022 CERN.
+# Copyright (C) 2020-2024 CERN.
 # Copyright (C) 2022 University Münster.
-# Copyright (C) 2022 TU Wien.
+# Copyright (C) 2022-2024 TU Wien.
 # Copyright (C) 2023 Graz University of Technology.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
@@ -14,7 +14,7 @@ The specific version for the services can be set through environment variables
 
 .. code-block:: console
 
-    $ export OPENSEARCH_VERSION=2.3.0
+    $ export OPENSEARCH_VERSION=2.16.0
 
 It can also use the centrally managed (supported) major version:
 
@@ -37,6 +37,6 @@ And turn them of once they are not needed anymore:
     $ docker-services-cli down
 """
 
-__version__ = "0.8.0"
+__version__ = "0.10.1"
 
 __all__ = ("__version__",)
