@@ -45,6 +45,12 @@ OPENSEARCH = {
         "OPENSEARCH_1_LATEST": "1.3.18",
         "OPENSEARCH_2_LATEST": "2.16.0",
     },
+    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
+        "search": {
+            "INVENIO_SEARCH_HOSTS": "http://127.0.0.1:9201",
+            "SEARCH_HOSTS": "http://127.0.0.1:9201",
+        }
+    },
 }
 """Opensearch service configuration."""
 
@@ -63,7 +69,7 @@ POSTGRESQL = {
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
         "db": {
-            "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://invenio:invenio@localhost:5433/invenio"
+            "SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://invenio:invenio@localhost:5433/invenio",
         }
     },
 }
@@ -94,8 +100,21 @@ REDIS = {
         "REDIS_7_LATEST": "7",
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "mq": {"BROKER_URL": "redis://localhost:6380/0"},
-        "cache": {"CACHE_TYPE": "redis"},
+        "mq": {
+            "CACHE_REDIS_PORT": "6380",
+            "BROKER_URL": "redis://localhost:6380/0",
+            "CELERY_BROKER_URL": "redis://127.0.0.1:6380/0",
+            "CACHE_REDIS_URL": "redis://127.0.0.1:6380/0",
+            "CELERY_RESULT_BACKEND": "redis://127.0.0.1:6380/2",
+        },
+        "cache": {
+            "CACHE_TYPE": "redis",
+            "CACHE_REDIS_PORT": "6380",
+            "BROKER_URL": "redis://127.0.0.1:6380/0",
+            "CELERY_BROKER_URL": "redis://127.0.0.1:6380/0",
+            "CACHE_REDIS_URL": "redis://127.0.0.1:6380/0",
+            "CELERY_RESULT_BACKEND": "redis://127.0.0.1:6380/2",
+        },
     },
 }
 """Redis service configuration."""
@@ -132,9 +151,7 @@ SERVICES_ALL_DEFAULT_VERSIONS = {
 SERVICE_TYPES = {
     "search": ["opensearch", "elasticsearch"],
     "db": ["mysql", "postgresql"],
-    "cache": [
-        "redis",
-    ],
+    "cache": ["redis"],
     "mq": ["rabbitmq", "redis"],
 }
 """Types of offered services."""
