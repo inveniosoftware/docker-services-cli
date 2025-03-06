@@ -127,12 +127,14 @@ MINIO = {
     "DEFAULT_VERSIONS": {"MINIO_2025_LATEST": "latest"},
     "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES": {
         "S3_ACCESS_KEY_ID": "invenio",
+        # minio needs at least 8 characters for the secret
         "S3_SECRET_ACCESS_KEY": "invenio8",
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
         "s3": {
             "S3_ENDPOINT_URL": "http://localhost:9000",
             "S3_ACCESS_KEY_ID": "invenio",
+            # minio needs at least 8 characters for the secret
             "S3_SECRET_ACCESS_KEY": "invenio8",
         }
     },
