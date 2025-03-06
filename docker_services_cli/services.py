@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2020 CERN.
 # Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2025 CESNET z.s.p.o.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -14,7 +15,7 @@ from subprocess import PIPE, Popen, check_call
 
 import click
 
-from .config import DOCKER_SERVICES_FILEPATH, MYSQL, POSTGRESQL, SERVICE_TYPES
+from .config import DOCKER_SERVICES_FILEPATH, MYSQL, SERVICE_TYPES
 
 
 def _run_healthcheck_command(command, verbose=False):
@@ -136,6 +137,14 @@ def redis_healthcheck(*args, **kwargs):
     )
 
 
+def minio_healthcheck(*args, **kwargs):
+    verbose = kwargs["verbose"]
+
+    return _run_healthcheck_command(
+        ["curl", "-f", "http://localhost:9000/minio/health/live"], verbose
+    )
+
+
 HEALTHCHECKS = {
     "elasticsearch": search_healthcheck,
     "opensearch": search_healthcheck,
@@ -143,6 +152,7 @@ HEALTHCHECKS = {
     "mysql": mysql_healthcheck,
     "rabbitmq": rabbitmq_healthcheck,
     "redis": redis_healthcheck,
+    "minio": minio_healthcheck,
 }
 """Health check functions module path, as string."""
 

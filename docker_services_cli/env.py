@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2020 CERN.
 # Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2025 CESNET z.s.p.o.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -73,6 +74,10 @@ def _load_or_set_env(services_version, default_version):
         os.environ[services_version] = version_from_env
 
     elif major_version_from_env and _is_version(major_version_from_env):
+        os.environ[services_version] = major_version_from_env
+
+    elif major_version_from_env == "latest":
+        # for example for minio, where we do not have a semantic version
         os.environ[services_version] = major_version_from_env
 
     else:

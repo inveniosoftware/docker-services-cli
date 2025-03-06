@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2020-2022 CERN.
 # Copyright (C) 2024 KTH Royal Institute of Technology.
+# Copyright (C) 2025 CESNET z.s.p.o.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -73,3 +74,17 @@ services:
     ports:
       - "15673:15672"
       - "5673:5672"
+  minio:
+    image: minio/minio:${MINIO_VERSION}
+    restart: "unless-stopped"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY}
+    entrypoint: >
+      /bin/sh -c "
+      mkdir -p /data/default;
+      /usr/bin/docker-entrypoint.sh server /data --console-address :9001
+      "
+    ports:
+      - "9000:9000"
+      - "9001:9001"
