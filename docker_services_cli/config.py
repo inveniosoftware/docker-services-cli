@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2020-2024 CERN.
 # Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2025 CESNET z.s.p.o.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -119,6 +120,25 @@ RABBITMQ = {
 }
 """RabbitMQ service configuration."""
 
+MINIO = {
+    "MINIO_VERSION": "MINIO_2025_LATEST",
+    # note: minio does not do semantic versioning, so we use the latest version
+    # the release at the time of writing this is RELEASE.2025-02-28T09-55-16Z
+    "DEFAULT_VERSIONS": {"MINIO_2025_LATEST": "latest"},
+    "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES": {
+        "S3_ACCESS_KEY_ID": "invenio",
+        "S3_SECRET_ACCESS_KEY": "invenio8",
+    },
+    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
+        "s3": {
+            "S3_ENDPOINT_URL": "http://localhost:9000",
+            "S3_ACCESS_KEY_ID": "invenio",
+            "S3_SECRET_ACCESS_KEY": "invenio8",
+        }
+    },
+}
+"""MINIO service configuration."""
+
 SERVICES = {
     "elasticsearch": ELASTICSEARCH,
     "opensearch": OPENSEARCH,
@@ -126,6 +146,7 @@ SERVICES = {
     "mysql": MYSQL,
     "redis": REDIS,
     "rabbitmq": RABBITMQ,
+    "minio": MINIO,
 }
 """List of services to configure."""
 
@@ -136,6 +157,7 @@ SERVICES_ALL_DEFAULT_VERSIONS = {
     **REDIS.get("DEFAULT_VERSIONS", {}),
     **MYSQL.get("DEFAULT_VERSIONS", {}),
     **RABBITMQ.get("DEFAULT_VERSIONS", {}),
+    **MINIO.get("DEFAULT_VERSIONS", {}),
 }
 """Services default latest versions."""
 
@@ -146,5 +168,6 @@ SERVICE_TYPES = {
         "redis",
     ],
     "mq": ["rabbitmq", "redis"],
+    "s3": ["minio"],
 }
 """Types of offered services."""
