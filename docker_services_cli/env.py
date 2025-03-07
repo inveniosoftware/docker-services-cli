@@ -109,7 +109,7 @@ def override_default_env(services_to_override=None):
                         service_name, ""
                     )
                     env_var_with_version = (
-                        f"{service_name.upper()}_" f"{service_override_version}_LATEST"
+                        f"{service_name.upper()}_{service_override_version}_LATEST"
                     )
                     if SERVICES_ALL_DEFAULT_VERSIONS.get(env_var_with_version):
                         os.environ[f"{service_name.upper()}_VERSION"] = (

@@ -138,6 +138,7 @@ def redis_healthcheck(*args, **kwargs):
 
 
 def minio_healthcheck(*args, **kwargs):
+    """Minio healthcheck."""
     verbose = kwargs["verbose"]
 
     return _run_healthcheck_command(
@@ -178,8 +179,7 @@ def wait_for_services(
         ready = check(filepath=filepath, verbose=verbose)
         while not ready and try_ < max_retries:
             click.secho(
-                f"{service} not ready at {try_} retries, waiting "
-                f"{exp_backoff_time}s",
+                f"{service} not ready at {try_} retries, waiting {exp_backoff_time}s",
                 fg="yellow",
             )
             try_ += 1
