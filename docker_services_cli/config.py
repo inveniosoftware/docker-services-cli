@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2020-2024 CERN.
-# Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2024-2025 Graz University of Technology.
 # Copyright (C) 2025 CESNET z.s.p.o.
 #
 # Docker-Services-CLI is free software; you can redistribute it and/or modify
@@ -105,8 +105,14 @@ REDIS = {
         "REDIS_7_LATEST": "7",
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "mq": {"BROKER_URL": "redis://localhost:6380/0"},
-        "cache": {"CACHE_TYPE": "redis"},
+        "mq": {
+            "BROKER_URL": "redis://localhost:6380/0",
+            "CELERY_RESULT_BACKEND": "redis://localhost:6380/1",
+        },
+        "cache": {
+            "CACHE_TYPE": "redis",
+            "CACHE_REDIS_URL": "redis://127.0.0.1:6380/0",
+        },
     },
 }
 """Redis service configuration."""
