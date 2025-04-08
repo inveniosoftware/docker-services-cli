@@ -9,6 +9,16 @@
 Changes
 =======
 
+Version 0.11.0 (released 2025-04-11)
+
+- Postgresql: add 16 and remove 11, 12, 13
+- mysql: remove 5, REASON: endoflife
+- config: export SEARCH_HOSTS environment for OpenSearch/ElasticSearch
+- feature: s3 support
+    - This feature sets up a MinIO S3 server and creates
+      a bucket named 'default' within it.
+- env: better handling for "latest" version values
+
 Version 0.10.1 (released 2024-08-23)
 
 - Adds the missing OPENSEARCH_INITIAL_ADMIN_PASSWORD env var for newer versions
