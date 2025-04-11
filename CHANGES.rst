@@ -9,6 +9,10 @@
 Changes
 =======
 
+Version v0.12.0 (released 2025-04-11)
+
+- config: export `SEARCH_HOSTS` environment for OpenSearch/ElasticSearch
+
 Version v0.11.1 (released 2025-04-11)
 
 - Fix incomplete revert of port config change
