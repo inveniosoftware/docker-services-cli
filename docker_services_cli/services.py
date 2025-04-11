@@ -41,7 +41,7 @@ def search_healthcheck(*args, **kwargs):
     verbose = kwargs["verbose"]
 
     return _run_healthcheck_command(
-        ["curl", "-f", "localhost:9201/_cluster/health?wait_for_status=green"], verbose
+        ["curl", "-f", "localhost:9200/_cluster/health?wait_for_status=green"], verbose
     )
 
 
