@@ -9,6 +9,10 @@
 Changes
 =======
 
+Version v0.11.1 (released 2025-04-11)
+
+- Fix incomplete revert of port config change
+
 Version 0.11.0 (released 2025-04-11)
 
 - Postgresql: add 16 and remove 11, 12, 13

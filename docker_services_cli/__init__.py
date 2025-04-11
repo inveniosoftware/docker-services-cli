@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020-2024 CERN.
+# Copyright (C) 2020-2025 CERN.
 # Copyright (C) 2022 University Münster.
 # Copyright (C) 2022-2024 TU Wien.
 # Copyright (C) 2023 Graz University of Technology.
@@ -37,6 +37,6 @@ And turn them of once they are not needed anymore:
     $ docker-services-cli down
 """
 
-__version__ = "0.11.0"
+__version__ = "0.11.1"
 
 __all__ = ("__version__",)
