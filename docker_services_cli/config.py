@@ -36,11 +36,6 @@ ELASTICSEARCH = {
     "DEFAULT_VERSIONS": {
         "ELASTICSEARCH_7_LATEST": "7.10.2",  # the last of the OSS versions (https://github.com/elastic/elasticsearch/issues/58303)
     },
-    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "search": {
-            "SEARCH_HOSTS": "\"[{'host': 'localhost', 'port': 9201}]\"",
-        }
-    },
 }
 """Elasticsearch service configuration."""
 
@@ -50,11 +45,6 @@ OPENSEARCH = {
     "DEFAULT_VERSIONS": {
         "OPENSEARCH_1_LATEST": "1.3.18",
         "OPENSEARCH_2_LATEST": "2.16.0",
-    },
-    "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
-        "search": {
-            "SEARCH_HOSTS": "\"[{'host': 'localhost', 'port': 9201}]\"",
-        }
     },
 }
 """Opensearch service configuration."""
