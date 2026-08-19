@@ -1,17 +1,18 @@
 # SPDX-FileCopyrightText: 2020 CERN.
 # SPDX-FileCopyrightText: 2024 Graz University of Technology.
 # SPDX-FileCopyrightText: 2025 CESNET z.s.p.o.
+# SPDX-FileCopyrightText: 2026 TU Wien.
 # SPDX-License-Identifier: MIT
 
 """Services module."""
 
 import time
 from os import path
-from subprocess import PIPE, Popen, check_call
+from subprocess import PIPE, Popen, check_call, run
 
 import click
 
-from .config import DOCKER_SERVICES_FILEPATH, MYSQL, SERVICE_TYPES
+from .config import DOCKER_SERVICES_FILEPATH, MYSQL, SERVICE_TYPES, SERVICES
 
 
 def _run_healthcheck_command(command, verbose=False):
@@ -32,24 +33,56 @@ def _run_healthcheck_command(command, verbose=False):
         return False
 
 
-def search_healthcheck(*args, **kwargs):
-    """{Elastic,Open}Search healthcheck."""
+def es_healthcheck(
+    *args, filepath=DOCKER_SERVICES_FILEPATH, project_name=None, **kwargs
+):
+    """Check the Elasticsearch service's health."""
     verbose = kwargs["verbose"]
 
-    return _run_healthcheck_command(
-        ["curl", "-f", "localhost:9200/_cluster/health?wait_for_status=green"], verbose
-    )
+    try:
+        port = get_public_service_ports(
+            ["elasticsearch"], filepath=filepath, project_name=project_name
+        )["ELASTICSEARCH_PORT"]
+        return _run_healthcheck_command(
+            ["curl", "-f", f"localhost:{port}/_cluster/health?wait_for_status=green"],
+            verbose,
+        )
+    except Exception as e:
+        print(e)
+        return False
+
+
+def os_healthcheck(
+    *args, filepath=DOCKER_SERVICES_FILEPATH, project_name=None, **kwargs
+):
+    """Check the OpenSearch service's health."""
+    verbose = kwargs["verbose"]
+
+    try:
+        port = get_public_service_ports(
+            ["opensearch"], filepath=filepath, project_name=project_name
+        )["OPENSEARCH_PORT"]
+        return _run_healthcheck_command(
+            ["curl", "-f", f"localhost:{port}/_cluster/health?wait_for_status=green"],
+            verbose,
+        )
+    except Exception as e:
+        print(e)
+        return False
 
 
 def postgresql_healthcheck(*args, **kwargs):
     """Postgresql healthcheck."""
     filepath = kwargs["filepath"]
     verbose = kwargs["verbose"]
+    project_name = kwargs["project_name"]
+    proj_name_args = ["--project-name", project_name] if project_name else []
 
     return _run_healthcheck_command(
         [
             "docker",
             "compose",
+            *proj_name_args,
             "--file",
             filepath,
             "exec",
@@ -68,11 +101,14 @@ def mysql_healthcheck(*args, **kwargs):
     filepath = kwargs["filepath"]
     verbose = kwargs["verbose"]
     password = MYSQL["CONTAINER_CONFIG_ENVIRONMENT_VARIABLES"]["MYSQL_ROOT_PASSWORD"]
+    project_name = kwargs["project_name"]
+    proj_name_args = ["--project-name", project_name] if project_name else []
 
     return _run_healthcheck_command(
         [
             "docker",
             "compose",
+            *proj_name_args,
             "--file",
             filepath,
             "exec",
@@ -90,11 +126,14 @@ def rabbitmq_healthcheck(*args, **kwargs):
     """Rabbitmq healthcheck."""
     filepath = kwargs["filepath"]
     verbose = kwargs["verbose"]
+    project_name = kwargs["project_name"]
+    proj_name_args = ["--project-name", project_name] if project_name else []
 
     return _run_healthcheck_command(
         [
             "docker",
             "compose",
+            *proj_name_args,
             "--file",
             filepath,
             "exec",
@@ -112,11 +151,14 @@ def redis_healthcheck(*args, **kwargs):
     """Redis healthcheck."""
     filepath = kwargs["filepath"]
     verbose = kwargs["verbose"]
+    project_name = kwargs["project_name"]
+    proj_name_args = ["--project-name", project_name] if project_name else []
 
     return _run_healthcheck_command(
         [
             "docker",
             "compose",
+            *proj_name_args,
             "--file",
             filepath,
             "exec",
@@ -143,8 +185,8 @@ def minio_healthcheck(*args, **kwargs):
 
 
 HEALTHCHECKS = {
-    "elasticsearch": search_healthcheck,
-    "opensearch": search_healthcheck,
+    "elasticsearch": es_healthcheck,
+    "opensearch": os_healthcheck,
     "postgresql": postgresql_healthcheck,
     "mysql": mysql_healthcheck,
     "rabbitmq": rabbitmq_healthcheck,
@@ -155,7 +197,11 @@ HEALTHCHECKS = {
 
 
 def wait_for_services(
-    services, filepath=DOCKER_SERVICES_FILEPATH, max_retries=6, verbose=False
+    services,
+    filepath=DOCKER_SERVICES_FILEPATH,
+    project_name=None,
+    max_retries=6,
+    verbose=False,
 ):
     """Wait for services to be up.
 
@@ -172,7 +218,7 @@ def wait_for_services(
         try_ = 1
         # Using plain __import__ to avoid depending on invenio-base
         check = HEALTHCHECKS[service]
-        ready = check(filepath=filepath, verbose=verbose)
+        ready = check(filepath=filepath, project_name=project_name, verbose=verbose)
         while not ready and try_ < max_retries:
             click.secho(
                 f"{service} not ready at {try_} retries, waiting {exp_backoff_time}s",
@@ -181,7 +227,7 @@ def wait_for_services(
             try_ += 1
             time.sleep(exp_backoff_time)
             exp_backoff_time *= 2
-            ready = check(filepath=filepath, verbose=verbose)
+            ready = check(filepath=filepath, project_name=project_name, verbose=verbose)
 
         if not ready:
             click.secho(f"Unable to boot up {service}", fg="red")
@@ -191,7 +237,12 @@ def wait_for_services(
 
 
 def services_up(
-    services, filepath=DOCKER_SERVICES_FILEPATH, wait=True, retries=6, verbose=False
+    services,
+    filepath=DOCKER_SERVICES_FILEPATH,
+    project_name=None,
+    wait=True,
+    retries=6,
+    verbose=False,
 ):
     """Start the given services up.
 
@@ -209,20 +260,66 @@ def services_up(
         )
         exit(1)
 
-    command = ["docker", "compose", "--file", filepath, "up", "-d"]
+    proj_name_args = [] if not project_name else ["--project-name", project_name]
+    command = ["docker", "compose", *proj_name_args, "--file", filepath, "up", "-d"]
     command.extend(services)
 
     check_call(command)
     if wait:
-        wait_for_services(services, filepath, max_retries=retries, verbose=verbose)
+        wait_for_services(
+            services,
+            filepath,
+            project_name=project_name,
+            max_retries=retries,
+            verbose=verbose,
+        )
 
 
-def services_down(filepath=DOCKER_SERVICES_FILEPATH):
+def services_down(filepath=DOCKER_SERVICES_FILEPATH, project_name=None):
     """Stops the given services.
 
     It does not requries the services. It stops containers and removes
     containers, networks, volumes, and images created by ``up``.
     """
-    command = ["docker", "compose", "--file", filepath, "down", "--volumes"]
+    proj_name_args = [] if not project_name else ["--project-name", project_name]
+    command = [
+        "docker",
+        "compose",
+        *proj_name_args,
+        "--file",
+        filepath,
+        "down",
+        "--volumes",
+    ]
 
     check_call(command)
+
+
+def get_public_service_ports(
+    services, filepath=DOCKER_SERVICES_FILEPATH, project_name=None
+):
+    """Get the actual ports assigned to the services, as reported by docker compose.
+
+    This is useful when binding services to port 0, which assigns a randomly selected
+    free port for the service.
+    """
+    actual_ports = {}
+    proj_name_args = [] if not project_name else ["--project-name", project_name]
+    base_command = ["docker", "compose", *proj_name_args, "--file", filepath, "port"]
+    for service in services:
+        for port_name, port_value in SERVICES[service].get("PORTS", {}).items():
+            # we assume the internal port to be the same as the configured default port
+            internal_port = str(port_value)
+
+            command = base_command + [service, internal_port]
+            completed_process = run(command, capture_output=True, check=True, text=True)
+
+            # the public port will typically be reported together with the address,
+            # e.g. 127.0.0.1:5432
+            public_port = completed_process.stdout
+            if ":" in public_port:
+                *_, public_port = public_port.split(":")
+
+            actual_ports[port_name] = public_port.strip()
+
+    return actual_ports

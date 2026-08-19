@@ -31,6 +31,23 @@ And turn them of once they are not needed anymore:
 .. code-block:: console
 
     $ docker-services-cli down
+
+Specific non-standard ports for each service can be used by providing them via
+environment variables:
+
+.. code-block:: console
+
+    $ export OPENSEARCH_PORT=1234 OPENSEARCH_CLUSTER_PORT=9301 POSTGRESQL_PORT=1337
+    $ REDIS_PORT=1993 docker-services-cli up --search opensearch --db postgresql --cache redis
+
+Note that port 0 is a special value on Unix systems, which assigns a random free port!
+The CLI provides a ``--randomize-ports`` flag to do this automatically.
+
+The available services with their configuration can be displayed via the CLI:
+
+.. code-block:: console
+
+    $ docker-services-cli show-services
 """
 
 __version__ = "0.12.2"

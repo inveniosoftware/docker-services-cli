@@ -1,21 +1,26 @@
 # SPDX-FileCopyrightText: 2020 CERN.
+# SPDX-FileCopyrightText: 2026 TU Wien.
 # SPDX-License-Identifier: MIT
 
 """CLI module."""
 
+import json
+import os
 from functools import update_wrapper
 from pathlib import Path
+from subprocess import CalledProcessError
 
 import click
 
-from .config import SERVICE_TYPES
+from .config import SERVICE_TYPES, SERVICES
 from .env import (
     normalize_service_name,
-    override_default_env,
+    override_default_versions_in_env,
+    populate_env_configuration,
     print_setup_env_config,
-    set_env,
+    randomize_service_ports_env,
 )
-from .services import services_down, services_up
+from .services import get_public_service_ports, services_down, services_up
 
 
 def _get_module_path():
@@ -43,7 +48,18 @@ def env_output(env_set_command):
             if env:
                 # comment command output until env export
                 click.echo(": '")
-            click.get_current_context().invoke(func, *args, **kwargs)
+
+            try:
+                click.get_current_context().invoke(func, *args, **kwargs)
+            except CalledProcessError as e:
+                # in case someting goes wrong (e.g. the ports are already in use)
+                # we want to end the comment block after the command output and
+                # report an error
+                if env:
+                    click.echo("'")
+                click.echo(f"exit {e.returncode}")
+                exit(e.returncode)
+
             if env:
                 # end of multiline comment, start of export statements
                 click.echo("'")
@@ -51,6 +67,7 @@ def env_output(env_set_command):
                     services,
                     click.get_current_context().info_name,
                     env_set_command=env_set_command,
+                    env_prefix=kwargs.get("env_prefix", ""),
                 )
 
         return update_wrapper(_print_env_output, func)
@@ -89,23 +106,20 @@ def services_by_type(func):
                 or normalize_service_name(service) in available_services
             ):
                 raise click.BadParameter(
-                    "{service} is not a valid service of type {type}. "
-                    "Try one of: \n{available_services}".format(
-                        service=service,
-                        type=service_type.name,
-                        available_services=available_services,
-                    )
+                    f"{service} is not a valid service of type {service_type.name}. "
+                    f"Try one of: \n{available_services}"
                 )
         return list(services_list)
 
     for service_type in SERVICE_TYPES:
+        service_types = ", ".join(SERVICE_TYPES.get(service_type))
         click.option(
-            "--{}".format(service_type),
+            f"--{service_type}",
             callback=validate_service_name,
             multiple=True,
-            help="Specify which service should run as {0}. "
-            "Available {0} services: {1}.".format(
-                service_type, ", ".join(SERVICE_TYPES.get(service_type))
+            help=(
+                f"Specify which service should run as {service_type}. "
+                f"Available {service_type} services: {service_types}."
             ),
         )(func)
 
@@ -140,13 +154,13 @@ class ServicesCtx(object):
 @click.pass_context
 def cli(ctx, filepath, verbose):
     """Initialize CLI context."""
-    set_env()
+    populate_env_configuration()
     ctx.obj = ServicesCtx(filepath=filepath, verbose=verbose)
 
 
 @cli.command()
 @click.option(
-    "--no-wait",
+    "--wait/--no-wait",
     is_flag=True,
     help="Wait for services to be up (use healthchecks).",
 )
@@ -156,10 +170,33 @@ def cli(ctx, filepath, verbose):
     type=int,
     help="Number of times to retry a service's healthcheck.",
 )
+@click.option(
+    "--randomize-ports",
+    is_flag=True,
+    default=False,
+    help=(
+        "Use randomized ports for the services (assign port 0 for each service). "
+        "This may not work on all platforms."
+    ),
+)
+@click.option(
+    "--env-prefix",
+    default="",
+    type=str,
+    help="Prefix to use for the exported environment variables.",
+)
+@click.option(
+    "--project-name",
+    default=None,
+    type=str,
+    help="Project name to use for the services.",
+)
 @services_by_type
 @env_output(env_set_command="export")
 @click.pass_obj
-def up(services_ctx, services, no_wait, retries):
+def up(
+    services_ctx, services, project_name, wait, retries, randomize_ports, env_prefix
+):
     r"""Boots up the required services.
 
     Example:
@@ -173,24 +210,66 @@ def up(services_ctx, services, no_wait, retries):
     if len(_services) == 1 and _services[0].lower() == "all":
         _services = []
 
-    override_default_env(services_to_override=_services)
+    override_default_versions_in_env(requested_services=_services)
+    if randomize_ports:
+        randomize_service_ports_env(_services)
     click.secho("Environment setup", fg="green")
 
     normalized_services = [normalize_service_name(s) for s in _services]
     services_up(
         services=normalized_services,
         filepath=services_ctx.filepath,
-        wait=(not no_wait),
+        project_name=project_name,
+        wait=wait,
         retries=retries,
         verbose=services_ctx.verbose,
     )
+
+    # update the environment with the services' actual public ports before the
+    # `env_output()` logic kicks in, so that we get the correct ports printed
+    for env_var_name, port in get_public_service_ports(
+        services=normalized_services,
+        filepath=services_ctx.filepath,
+        project_name=project_name,
+    ).items():
+        os.environ[env_var_name] = port
+
     click.secho("Services up!", fg="green")
 
 
 @cli.command()
+@click.option(
+    "--env-prefix",
+    default="",
+    type=str,
+    help="Prefix to use for the exported environment variables.",
+)
+@click.option(
+    "--project-name",
+    default=None,
+    type=str,
+    help="Project name to use for the services.",
+)
 @env_output(env_set_command="unset")
 @click.pass_obj
-def down(services_ctx):
+def down(services_ctx, project_name, env_prefix):
     """Shuts down the required services."""
-    services_down(filepath=services_ctx.filepath)
+    services_down(filepath=services_ctx.filepath, project_name=project_name)
     click.secho("Services down!", fg="green")
+
+
+@cli.command()
+@click.option(
+    "--pretty",
+    is_flag=True,
+    help="Pretty-print the output.",
+)
+@click.pass_obj
+def show_services(services_ctx, pretty):
+    """Show the supported services with their default configuration."""
+    serialized_services = {**SERVICES}
+    for service in serialized_services.values():
+        types = service.get("TYPE", [])
+        service["TYPE"] = [t.value for t in types]
+
+    click.echo(json.dumps(serialized_services, indent=2 if pretty else None))
