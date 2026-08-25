@@ -2,10 +2,15 @@
     SPDX-FileCopyrightText: 2020-2024 CERN.
     SPDX-FileCopyrightText: 2023 Graz University of Technology.
     SPDX-FileCopyrightText: 2024-2026 TU Wien.
+    SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
     SPDX-License-Identifier: MIT
 
 Changes
 =======
+
+Version v0.12.3 (released 2026-08-25)
+
+- fix(config): update CACHE_TYPE deprecated value
 
 Version v0.12.2 (released 2025-10-14)
 
