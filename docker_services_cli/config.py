@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2020-2025 CERN.
 # SPDX-FileCopyrightText: 2024 Graz University of Technology.
 # SPDX-FileCopyrightText: 2025 CESNET z.s.p.o.
+# SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
 # SPDX-License-Identifier: MIT
 
 """Configuration module.
@@ -102,7 +103,7 @@ REDIS = {
     },
     "CONTAINER_CONNECTION_ENVIRONMENT_VARIABLES": {
         "mq": {"BROKER_URL": "redis://localhost:6379/0"},
-        "cache": {"CACHE_TYPE": "redis"},
+        "cache": {"CACHE_TYPE": "RedisCache"},
     },
 }
 """Redis service configuration."""
