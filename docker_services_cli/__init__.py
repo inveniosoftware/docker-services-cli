@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: 2022 University Münster.
 # SPDX-FileCopyrightText: 2022-2026 TU Wien.
 # SPDX-FileCopyrightText: 2023 Graz University of Technology.
+# SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
 # SPDX-License-Identifier: MIT
 
 """Module to ease the creation and management of services.
@@ -33,6 +34,6 @@ And turn them of once they are not needed anymore:
     $ docker-services-cli down
 """
 
-__version__ = "0.12.2"
+__version__ = "0.12.3"
 
 __all__ = ("__version__",)
