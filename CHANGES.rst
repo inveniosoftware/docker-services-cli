@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v0.12.4 (released 2026-09-17)
+
+- fix: Minio no longer available on docker hub, replaced with RUSTFS
+- fix(CI): add Python 3.14 to the testing matrix
+
 Version v0.12.3 (released 2026-08-25)
 
 - fix(config): update CACHE_TYPE deprecated value
