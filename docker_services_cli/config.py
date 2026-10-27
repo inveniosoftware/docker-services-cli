@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2020-2025 CERN.
-# SPDX-FileCopyrightText: 2024 Graz University of Technology.
+# SPDX-FileCopyrightText: 2024-2026 Graz University of Technology.
 # SPDX-FileCopyrightText: 2025-2026 CESNET z.s.p.o.
 # SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
 # SPDX-License-Identifier: MIT
@@ -58,11 +58,12 @@ OPENSEARCH = {
 
 # PostgreSQL
 POSTGRESQL = {
-    "POSTGRESQL_VERSION": "POSTGRESQL_16_LATEST",
+    "POSTGRESQL_VERSION": "POSTGRESQL_18_LATEST",
     "DEFAULT_VERSIONS": {
         "POSTGRESQL_14_LATEST": "14.9",
         "POSTGRESQL_15_LATEST": "15.4",
         "POSTGRESQL_16_LATEST": "16.2",
+        "POSTGRESQL_18_LATEST": "18",
     },
     "CONTAINER_CONFIG_ENVIRONMENT_VARIABLES": {
         "POSTGRESQL_USER": "invenio",
