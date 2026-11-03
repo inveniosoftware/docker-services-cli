@@ -1,12 +1,18 @@
 ..
     SPDX-FileCopyrightText: 2020-2024 CERN.
-    SPDX-FileCopyrightText: 2023 Graz University of Technology.
+    SPDX-FileCopyrightText: 2023-2026 Graz University of Technology.
     SPDX-FileCopyrightText: 2024-2026 TU Wien.
     SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
     SPDX-License-Identifier: MIT
 
 Changes
 =======
+
+Version v0.13.0 (released 2026-11-03)
+
+- chore(config): update opensearch versions
+- feat(os): bump OpenSearch version
+- feat(sql): bump postgresql version
 
 Version v0.12.4 (released 2026-09-17)
 
