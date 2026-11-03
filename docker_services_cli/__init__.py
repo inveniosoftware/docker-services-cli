@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2020-2025 CERN.
 # SPDX-FileCopyrightText: 2022 University Münster.
 # SPDX-FileCopyrightText: 2022-2026 TU Wien.
-# SPDX-FileCopyrightText: 2023 Graz University of Technology.
+# SPDX-FileCopyrightText: 2023-2026 Graz University of Technology.
 # SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -34,6 +34,6 @@ And turn them of once they are not needed anymore:
     $ docker-services-cli down
 """
 
-__version__ = "0.12.4"
+__version__ = "0.13.0"
 
 __all__ = ("__version__",)
